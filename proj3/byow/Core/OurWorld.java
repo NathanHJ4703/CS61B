@@ -5,10 +5,13 @@ import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 
 public class OurWorld {
+    //Maximum dimensions for our world.
     private static final int WIDTH = 60;
     private static final int HEIGHT = 30;
+    //Maximum width and height for the rooms.
     private static final int maxWidth = WIDTH/2;
     private static final int maxHeight = HEIGHT/2;
+    //The maximum limit of which x and y values the bottom left corner of the room can go in order to prevent the problem of out of bounds.
     private static final int largestX = WIDTH - 3;
     private static final int largestY = HEIGHT - 3;
 
@@ -33,7 +36,7 @@ public class OurWorld {
             }
         }
 
-        Room r = new Room(new Position(50, 20), 30, 15);
+        Room r = new Room(new Position(largestX, largestY), 30, 15);
         addRoom(r, ourWorld);
 
         ter.renderFrame(ourWorld);

@@ -61,7 +61,7 @@ public class Room {
         }
     }
 
-    // Returns a list of all the wall coordinates for the room
+    // Returns a list of all the wall coordinates for the room.
     public List<Position> getWallCoordinates() {
         List<Position> wallCoordinates = new LinkedList<>();
         int topSide = bottomLeft.getY() + height;
