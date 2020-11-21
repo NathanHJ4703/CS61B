@@ -6,16 +6,20 @@ import byow.TileEngine.Tileset;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import byow.lab12.Position;
 
 public class Rooms {
     private int side;
-    private Position upperLeft;
+    private Position upperLeftPos;
     private TETile tile;
     private static final Random RANDOM = new Random();
+    private int width;
+    private int height;
 
-    public Rooms(Position upperLeft, int WIDTH, int HEIGHT) {
-
+    public Rooms(Position upperLeft, int width, int height, TETile tile) {
+        this.width = width;
+        this.height = height;
+        upperLeftPos = upperLeft;
+        this.tile = tile;
     }
 
     public TETile getTile() {
@@ -57,20 +61,16 @@ public class Rooms {
         int HEIGHT = RANDOM.nextInt();
         for (int x = 0; x < WIDTH; x += 1) {
             for (int y = 0; y < HEIGHT; y += 1) {
-                list.add(new Position(x, y));
+                if (x == 0 || x == (WIDTH - 1) || y == 0 || y == (HEIGHT - 1)) {
+                    list.add(new Position(x, y, Tileset.WALL));
+                }
+                list.add(new Position(x, y, Tileset.FLOOR));
             }
         }
         return list;
     }
 
     //not sure if right. Might delete it because of no usage in getCoordinates.
-    public void addRow(List<Position> list, Position startPosition, int length) {
-        for (int offset = 0; offset < length; offset ++) {
-            int y = startPosition.getY();
-            int x = startPosition.getX() + offset;
-            list.add(new Position(x, y));
-        }
-    }
 
     public void overlap() {
 
