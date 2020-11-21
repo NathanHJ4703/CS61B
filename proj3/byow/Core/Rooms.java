@@ -63,14 +63,6 @@ public class Rooms {
         return list;
     }
 
-    //not sure if right. Might delete it because of no usage in getCoordinates.
-    public void addRow(List<Position> list, Position startPosition, int length) {
-        for (int offset = 0; offset < length; offset ++) {
-            int y = startPosition.getY();
-            int x = startPosition.getX() + offset;
-            list.add(new Position(x, y));
-        }
-    }
 
     public void overlap() {
 
