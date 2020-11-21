@@ -44,6 +44,7 @@ public class MemoryGame {
         StdDraw.enableDoubleBuffering();
 
         //TODO: Initialize random number generator
+        Random RANDOM = new Random();
     }
 
     public String generateRandomString(int n) {
