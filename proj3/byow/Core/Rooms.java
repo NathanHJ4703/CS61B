@@ -6,6 +6,7 @@ import byow.TileEngine.Tileset;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import byow.lab12.Position;
 
 public class Rooms {
     private int side;
@@ -16,6 +17,11 @@ public class Rooms {
     public Rooms(Position upperLeft, int WIDTH, int HEIGHT) {
 
     }
+
+    public TETile getTile() {
+        return tile;
+    }
+
     public void drawRooms() {
         // initialize tiles
 //        int WIDTH = RANDOM.nextInt();
@@ -42,20 +48,22 @@ public class Rooms {
             }
         }
     }
+
+    /** Returns a list of the (x,y) positions that this room covers */
     public List<Position> getCoordinates() {
         List<Position> list = new LinkedList<>();
 // fix this one to match behavior of rectangles
-        for (int i = 0; i < side; i++) {
-            int x = upperLeft.getX() - i;
-            int y = upperLeft.getY() - i;
-            addRow(list, new Position(x, y), side + i * 2);
+        int WIDTH = RANDOM.nextInt();
+        int HEIGHT = RANDOM.nextInt();
+        for (int x = 0; x < WIDTH; x += 1) {
+            for (int y = 0; y < HEIGHT; y += 1) {
+                list.add(new Position(x, y));
+            }
         }
-
         return list;
-
     }
 
-//not sure if right
+    //not sure if right. Might delete it because of no usage in getCoordinates.
     public void addRow(List<Position> list, Position startPosition, int length) {
         for (int offset = 0; offset < length; offset ++) {
             int y = startPosition.getY();
@@ -63,8 +71,8 @@ public class Rooms {
             list.add(new Position(x, y));
         }
     }
+
     public void overlap() {
 
     }
 }
-
