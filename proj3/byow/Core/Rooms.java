@@ -9,15 +9,16 @@ import java.util.Random;
 
 public class Rooms {
     private int side;
-    private Position upperLeftPos;
+    private Position upperLeft;
+    private TETile tile;
     private static final Random RANDOM = new Random();
-    private int width;
-    private int height;
 
-    public Rooms(Position upperLeft, int width, int height) {
-        this.width = width;
-        this.height = height;
-        upperLeftPos = upperLeft;
+    public Rooms(Position upperLeft, int WIDTH, int HEIGHT) {
+
+    }
+
+    public TETile getTile() {
+        return tile;
     }
 
     public void drawRooms() {
@@ -46,25 +47,27 @@ public class Rooms {
             }
         }
     }
-
-    /** Returns a list of the (x,y) positions that this room covers */
     public List<Position> getCoordinates() {
         List<Position> list = new LinkedList<>();
 // fix this one to match behavior of rectangles
-        int WIDTH = RANDOM.nextInt();
-        int HEIGHT = RANDOM.nextInt();
-        for (int x = 0; x < WIDTH; x += 1) {
-            for (int y = 0; y < HEIGHT; y += 1) {
-                if (x == 0 || x == (WIDTH - 1) || y == 0 || y == (HEIGHT - 1)) {
-                    list.add(new Position(x, y, Tileset.WALL));
-                }
-                list.add(new Position(x, y, Tileset.FLOOR));
-            }
+        for (int i = 0; i < side; i++) {
+            int x = upperLeft.getX() - i;
+            int y = upperLeft.getY() - i;
+            addRow(list, new Position(x, y), side + i * 2);
         }
+
         return list;
+
     }
 
-
+    //not sure if right
+    public void addRow(List<Position> list, Position startPosition, int length) {
+        for (int offset = 0; offset < length; offset ++) {
+            int y = startPosition.getY();
+            int x = startPosition.getX() + offset;
+            list.add(new Position(x, y));
+        }
+    }
     public void overlap() {
 
     }

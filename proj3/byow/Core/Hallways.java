@@ -27,9 +27,7 @@ public class Hallways {
                 vertHall[x][y] = Tileset.FLOOR;
             }
         }
-
     }
-
 
 
     public void drawHorizontalHallway() {
@@ -45,8 +43,8 @@ public class Hallways {
             }
         }
     }
-    public void drawCorner() {
 
+    public void drawCorner() {
 
     }
 
