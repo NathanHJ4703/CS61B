@@ -19,10 +19,13 @@ public class Hallways {
         //static x
         int length = RANDOM.nextInt();
         TETile[][] vertHall = new TETile[WIDTH][length];
-        for (int i = 0; i < length; i++) {
-            vertHall[WIDTH - 2][i] = Tileset.WALL;
-            vertHall[WIDTH - 1][i] = Tileset.FLOOR;
-            vertHall[WIDTH][i] = Tileset.WALL;
+        for (int x = 0; x <= WIDTH; x++) {
+            for (int y = 0; y < length; y++) {
+                if (x == 0 || x == WIDTH || y == 0 || y == length - 1) {
+                    vertHall[x][y] = Tileset.WALL;
+                }
+                vertHall[x][y] = Tileset.FLOOR;
+            }
         }
 
     }
@@ -31,9 +34,19 @@ public class Hallways {
 
     public void drawHorizontalHallway() {
         //static y
-
+        int length = RANDOM.nextInt();
+        TETile[][] horizHall = new TETile[length][WIDTH];
+        for (int y = 0; y <= WIDTH; y++) {
+            for (int x = 0; x < length; x++) {
+                if (y == 0 || y == WIDTH || x == 0 || x == length - 1) {
+                    horizHall[x][y] = Tileset.WALL;
+                }
+                horizHall[x][y] = Tileset.FLOOR;
+            }
+        }
     }
     public void drawCorner() {
+
 
     }
 

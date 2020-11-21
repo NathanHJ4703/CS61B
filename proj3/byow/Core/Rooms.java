@@ -70,7 +70,6 @@ public class Rooms {
         return list;
     }
 
-    //not sure if right. Might delete it because of no usage in getCoordinates.
 
     public void overlap() {
 
