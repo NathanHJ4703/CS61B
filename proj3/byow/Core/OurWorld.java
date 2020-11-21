@@ -7,6 +7,8 @@ import byow.TileEngine.Tileset;
     public class OurWorld {
         private static final int WIDTH = 60;
         private static final int HEIGHT = 30;
+        private static final int max_width_room = WIDTH/2;
+        private static final int max_height_room = HEIGHT/2;
 
         public OurWorld() {
 
@@ -25,10 +27,9 @@ import byow.TileEngine.Tileset;
                 }
             }
 
-            Rooms room = new Rooms()
-
             InputThing inputSeed = new InputThing(args[0]);
 
+            Rooms room = new Rooms(new Position(inputSeed.rand.nextInt()),inputSeed.rand.nextInt(max_width_room),inputSeed.rand.nextInt(max_height_room))
 
             //draws the world to the screen
             ter.renderFrame(world);

@@ -10,20 +10,14 @@ import java.util.Random;
 public class Rooms {
     private int side;
     private Position upperLeftPos;
-    private TETile tile;
     private static final Random RANDOM = new Random();
     private int width;
     private int height;
 
-    public Rooms(Position upperLeft, int width, int height, TETile tile) {
+    public Rooms(Position upperLeft, int width, int height) {
         this.width = width;
         this.height = height;
         upperLeftPos = upperLeft;
-        this.tile = tile;
-    }
-
-    public TETile getTile() {
-        return tile;
     }
 
     public void drawRooms() {
