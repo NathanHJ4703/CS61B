@@ -3,23 +3,23 @@ package byow.Core;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Room {
     private int side;
     private Position bottomLeft;
-    private TETile tile;
     private static final Random RANDOM = new Random();
     private int width;
     private int height;
+    private boolean overlap;
 
 
     public Room(Position position, int width, int height) {
         bottomLeft = position;
         this.width = width;
         this.height = height;
+        overlap = false;
+
     }
 
     public int getWidth() {
@@ -30,9 +30,6 @@ public class Room {
         return height;
     }
 
-    public TETile getTile() {
-        return tile;
-    }
 
     public void drawRoom() {
         // initialize tiles
@@ -74,9 +71,18 @@ public class Room {
         }
         for (int x = bottomLeft.getX(); x < rightSide; x += 1) {
             for (int y = bottomLeft.getY(); y < topSide; y += 1) {
+                if (overlap(x, y, OurWorld.coveredPositions)) {
+                    overlap = true;
+                    break;
+                }
                 if (x == bottomLeft.getX() || x == (rightSide - 1) || y == bottomLeft.getY() || y == (topSide - 1)) {
                     wallCoordinates.add(new Position(x, y));
+                    OurWorld.coveredPositions.add(new Position(x, y));
                 }
+            }
+            if (overlap) {
+                wallCoordinates = new LinkedList<>();
+                break;
             }
         }
 
@@ -96,9 +102,18 @@ public class Room {
         }
         for (int x = bottomLeft.getX(); x < rightSide; x += 1) {
             for (int y = bottomLeft.getY(); y < topSide; y += 1) {
+                if (overlap(x, y, OurWorld.coveredPositions) && !OurWorld.distinctRooms.contains(this)) {
+                    overlap = true;
+                    break;
+                }
                 if (x != bottomLeft.getX() && x != (rightSide - 1) && y != bottomLeft.getY() && y != (topSide - 1)) {
                     floorCoordinates.add(new Position(x, y));
+                    OurWorld.coveredPositions.add(new Position(x, y));
                 }
+            }
+            if (overlap) {
+                floorCoordinates = new LinkedList<>();
+                break;
             }
         }
 
@@ -113,8 +128,14 @@ public class Room {
             list.add(new Position(x, y));
         }
     }
-    public void overlap() {
 
+    public boolean overlap(int x, int y, Set<Position> positions) {
+        for (Position p : positions) {
+            if (p.getX() == x && p.getY() == y) {
+                return true;
+            }
+        }
+        return false;
     }
 
 

@@ -8,7 +8,7 @@ import java.util.Random;
 public class Hallways {
     private int length;
     private Position p;
-    private static final int WIDTH = 2;
+    private static final int WIDTH = 3;
     private static final Random RANDOM = new Random();
 
     public Hallways(Position p, int length){
