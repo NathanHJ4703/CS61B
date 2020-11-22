@@ -3,6 +3,7 @@ package byow.Core;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 
+import java.util.List;
 import java.util.Random;
 
 public class Hallways {
@@ -10,11 +11,15 @@ public class Hallways {
     private Position p;
     private static final int WIDTH = 3;
     private static final Random RANDOM = new Random();
+    private Room start;
 
-    public Hallways(Position p, int length){
+    public Hallways(Position p, int length, Room start){
         this.p = p;
         this.length = length;
+        this.start = start;
     }
+
+
     public void drawVerticalHallway() {
         //static x
         int length = RANDOM.nextInt();
@@ -42,6 +47,14 @@ public class Hallways {
                 horizHall[x][y] = Tileset.FLOOR;
             }
         }
+    }
+
+    public List<Position> getWallCoordinates() {
+        return null;
+    }
+
+    public List<Position> getFloorCoordinates() {
+        return null;
     }
 
     public void drawCorner() {

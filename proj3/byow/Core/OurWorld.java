@@ -4,9 +4,7 @@ import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public class OurWorld {
     //Maximum dimensions for our world.
@@ -20,6 +18,7 @@ public class OurWorld {
     private static final int largestY = HEIGHT - 3;
     public static Set<Position> coveredPositions = new HashSet<>();
     public static Set<Room> distinctRooms = new HashSet<>();
+    public static List<Room> listOfRooms = new ArrayList<>();
 
     public static int getYDimension() {
         return HEIGHT;
@@ -42,7 +41,7 @@ public class OurWorld {
             }
         }
         int i = 10;
-        Random rand = new Random();
+        Random rand = new Random(1);
         while(i > 0) {
             Room r = new Room(new Position(rand.nextInt(largestX+1), rand.nextInt(largestY+1)),
                     rand.nextInt(maxWidth+1) + 3, rand.nextInt(maxHeight+1) + 3);
@@ -59,7 +58,10 @@ public class OurWorld {
         for (Position p : room.getWallCoordinates()) {
             world[p.getX()][p.getY()] = Tileset.WALL;
         }
-        OurWorld.distinctRooms.add(room);
+        if (!room.getOverlap()) {
+            OurWorld.distinctRooms.add(room);
+            OurWorld.listOfRooms.add(room);
+        }
         for (Position p : room.getFloorCoordinates()) {
             world[p.getX()][p.getY()] = Tileset.FLOOR;
         }

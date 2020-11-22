@@ -6,7 +6,6 @@ import byow.TileEngine.Tileset;
 import java.util.*;
 
 public class Room {
-    private int side;
     private Position bottomLeft;
     private static final Random RANDOM = new Random();
     private int width;
@@ -20,6 +19,10 @@ public class Room {
         this.height = height;
         overlap = false;
 
+    }
+
+    public boolean getOverlap() {
+        return overlap;
     }
 
     public int getWidth() {
