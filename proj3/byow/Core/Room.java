@@ -32,6 +32,7 @@ public class Room {
         connected = false;
     }
 
+
     // Assume that r2 is to the right of r1.
     public static void connect(Room r1, Room r2) {
         // If bottom left corner of room1 is placed higher than bottom left corner of room2.

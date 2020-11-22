@@ -10,9 +10,15 @@ public class OurWorld {
     //Maximum dimensions for our world.
     private static final int WIDTH = 60;
     private static final int HEIGHT = 30;
-    //Maximum width and height for the rooms.
-    private static final int maxWidth = WIDTH/2;
-    private static final int maxHeight = HEIGHT/2;
+    //Maximum width and height for the BIG rooms.
+    private static final int maxWidth = WIDTH / 2;
+    private static final int maxHeight = HEIGHT / 2;
+    //Maximum width and height for SMALL rooms
+    private static final int maxSWidth = WIDTH / 4;
+    private static final int maxSHeight = HEIGHT / 4;
+    //Maximum width and height for TINY rooms
+    private static final int maxTWidth = WIDTH / 8;
+    private static final int maxTHeight = HEIGHT / 8;
     //The maximum limit of which x and y values the bottom left corner of the room can go in order to prevent the problem of out of bounds.
     private static final int largestX = WIDTH - 3;
     private static final int largestY = HEIGHT - 3;
@@ -48,12 +54,18 @@ public class OurWorld {
                 ourWorld[x][y] = Tileset.NOTHING;
             }
         }
-        int i = 10;
+        int i = 10000;
         Random rand = new Random(1);
         while(i > 0) {
             Room r = new Room(new Position(rand.nextInt(largestX+1), rand.nextInt(largestY+1)),
                     rand.nextInt(maxWidth+1) + 4, rand.nextInt(maxHeight+1) + 4, rand);
             addRoom(r, ourWorld);
+            Room sr = new Room(new Position(rand.nextInt(largestX+1), rand.nextInt(largestY+1)),
+                    rand.nextInt(maxSWidth+1) + 4, rand.nextInt(maxSHeight+1) + 4, rand);
+            addRoom(sr, ourWorld);
+            Room tr = new Room(new Position(rand.nextInt(largestX+1), rand.nextInt(largestY+1)),
+                    rand.nextInt(maxTWidth+1) + 4, rand.nextInt(maxTHeight+1) + 4, rand);
+            addRoom(tr, ourWorld);
             i--;
         }
         ter.renderFrame(ourWorld);
@@ -73,7 +85,3 @@ public class OurWorld {
     }
 }
 
-//tasks: create rooms, create hallways,
-// learn how to join then, add randomness
-// deal with overlapping
-//interact w input string
