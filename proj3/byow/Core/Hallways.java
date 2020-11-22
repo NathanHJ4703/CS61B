@@ -6,17 +6,15 @@ import byow.TileEngine.Tileset;
 import java.util.List;
 import java.util.Random;
 
-public class Hallways {
+public class Hallways extends Room {
     private int length;
     private Position p;
     private static final int WIDTH = 3;
     private static final Random RANDOM = new Random();
     private Room start;
 
-    public Hallways(Position p, int length, Room start){
-        this.p = p;
-        this.length = length;
-        this.start = start;
+    public Hallways(Position p, int length, Room start) {
+        super(p, WIDTH, length);
     }
 
 
