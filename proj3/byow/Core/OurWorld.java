@@ -18,7 +18,7 @@ public class OurWorld {
     private static final int largestY = HEIGHT - 3;
     public static Set<Position> coveredPositions = new HashSet<>();
     public static Set<Room> distinctRooms = new HashSet<>();
-    public static List<Room> listOfRooms = new ArrayList<>();
+    public static ArrayHeapMinPQ<Room> listOfRooms = new ArrayHeapMinPQ<>();
 
     public static int getYDimension() {
         return HEIGHT;
@@ -26,6 +26,14 @@ public class OurWorld {
 
     public static int getXDimension() {
         return WIDTH;
+    }
+
+    public static int getMaxWidth() {
+        return maxWidth;
+    }
+
+    public static int getMaxHeight() {
+        return maxHeight;
     }
 
     public static void main(String[] args) {
@@ -44,13 +52,10 @@ public class OurWorld {
         Random rand = new Random(1);
         while(i > 0) {
             Room r = new Room(new Position(rand.nextInt(largestX+1), rand.nextInt(largestY+1)),
-                    rand.nextInt(maxWidth+1) + 3, rand.nextInt(maxHeight+1) + 3);
+                    rand.nextInt(maxWidth+1) + 4, rand.nextInt(maxHeight+1) + 4, rand);
             addRoom(r, ourWorld);
             i--;
         }
-        //Room r = new Room(new Position(largestX, largestY), 30, 15);
-        //addRoom(r, ourWorld);
-
         ter.renderFrame(ourWorld);
     }
 
@@ -60,7 +65,7 @@ public class OurWorld {
         }
         if (!room.getOverlap()) {
             OurWorld.distinctRooms.add(room);
-            OurWorld.listOfRooms.add(room);
+            OurWorld.listOfRooms.add(room, room.getBottomLeft().getX());
         }
         for (Position p : room.getFloorCoordinates()) {
             world[p.getX()][p.getY()] = Tileset.FLOOR;

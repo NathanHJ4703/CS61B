@@ -11,14 +11,35 @@ public class Room {
     private int width;
     private int height;
     private boolean overlap;
+    private boolean connected;
+    private Random random;
 
+
+    public Room(Position position, int width, int height, Random random) {
+        bottomLeft = position;
+        this.width = width;
+        this.height = height;
+        overlap = false;
+        connected = false;
+        this.random = random;
+    }
 
     public Room(Position position, int width, int height) {
         bottomLeft = position;
         this.width = width;
         this.height = height;
         overlap = false;
+        connected = false;
+    }
 
+    // Assume that r2 is to the right of r1.
+    public static void connect(Room r1, Room r2) {
+        // If bottom left corner of room1 is placed higher than bottom left corner of room2.
+        if (r2.getBottomLeft().getY() < r1.getBottomLeft().getY()) {
+            int depthHallway = r1.random.nextInt(OurWorld.getMaxHeight());
+            VerticalHallway x = new VerticalHallway(new Position(r1.random.nextInt(r1.width - 3) + r1.getBottomLeft().getX(),
+                    r1.getBottomLeft().getY() - depthHallway), depthHallway);
+        }
     }
 
     public boolean getOverlap() {
@@ -31,34 +52,6 @@ public class Room {
 
     public int getHeight() {
         return height;
-    }
-
-
-    public void drawRoom() {
-        // initialize tiles
-//        int WIDTH = RANDOM.nextInt();
-//        int HEIGHT = RANDOM.nextInt();
-//        TETile[][] room = new TETile[WIDTH][HEIGHT];
-//        for (int x = upperLeft.getX(); x < WIDTH + upperLeft.getX(); x += 1) {
-//            for (int y = upperLeft.getY(); y < HEIGHT + upperLeft.getY(); y += 1) {
-//                if (x == upperLeft.getX() || x == WIDTH + upperLeft.getX()
-//                        || y == upperLeft.getY() || y == HEIGHT + upperLeft.getY()) {
-//                    room[x][y] = Tileset.WALL;
-//                }
-//                room[x][y] = Tileset.FLOOR;
-//            }
-//        }
-        int WIDTH = RANDOM.nextInt();
-        int HEIGHT = RANDOM.nextInt();
-        TETile[][] room = new TETile[WIDTH][HEIGHT];
-        for (int x = 0; x < WIDTH; x += 1) {
-            for (int y = 0; y < HEIGHT; y += 1) {
-                if (x == 0 || x == (WIDTH - 1) || y == 0 || y == (HEIGHT - 1)) {
-                    room[x][y] = Tileset.WALL;
-                }
-                room[x][y] = Tileset.FLOOR;
-            }
-        }
     }
 
     // Returns a list of all the wall coordinates for the room.
@@ -123,15 +116,6 @@ public class Room {
         return floorCoordinates;
     }
 
-    //not sure if right
-    public void addRow(List<Position> list, Position startPosition, int length) {
-        for (int offset = 0; offset < length; offset ++) {
-            int y = startPosition.getY();
-            int x = startPosition.getX() + offset;
-            list.add(new Position(x, y));
-        }
-    }
-
     public boolean overlap(int x, int y, Set<Position> positions) {
         for (Position p : positions) {
             if (p.getX() == x && p.getY() == y) {
@@ -139,6 +123,10 @@ public class Room {
             }
         }
         return false;
+    }
+
+    public Position getBottomLeft() {
+        return bottomLeft;
     }
 
 
