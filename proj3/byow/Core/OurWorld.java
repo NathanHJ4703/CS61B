@@ -55,6 +55,7 @@ public class OurWorld {
                 ourWorld[x][y] = Tileset.NOTHING;
             }
         }
+
         int i = 10000;
         Random rand = new Random(1);
         while(i > 0) {
@@ -69,9 +70,13 @@ public class OurWorld {
             addRoom(tr, ourWorld);
             i--;
         }
+
+
         //Room r1 = listOfRooms.removeSmallest();
         //Room r2 = listOfRooms.getSmallest();
         //addHallway(Room.connect(r1, r2), ourWorld);
+
+
         addOpenings(listOfRooms, ourWorld);
         ter.renderFrame(ourWorld);
     }

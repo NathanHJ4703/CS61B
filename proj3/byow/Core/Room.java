@@ -114,6 +114,7 @@ public class Room {
         return wallCoordinates;
     }
 
+
     private void checkSurroundings(int x, int y, int topSide, int rightSide) {
         if (x == bottomLeft.getX() && y != bottomLeft.getY() && y != topSide - 1) {
             checkLeft(x, y);
@@ -149,6 +150,7 @@ public class Room {
             isLeftOpen = false;
         }
     }
+
 
     // returns a list of all the floor coordinates for the room.
     public List<Position> getFloorCoordinates() {
