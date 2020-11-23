@@ -56,6 +56,9 @@ public class OurWorld {
             addRoom(r, ourWorld);
             i--;
         }
+        //Room r1 = listOfRooms.removeSmallest();
+        //Room r2 = listOfRooms.getSmallest();
+        //addHallway(Room.connect(r1, r2), ourWorld);
         ter.renderFrame(ourWorld);
     }
 
@@ -71,6 +74,15 @@ public class OurWorld {
             world[p.getX()][p.getY()] = Tileset.FLOOR;
         }
     }
+/**
+    private static void addHallway(Room hallway, TETile[][] world) {
+        for (Position p : hallway.getWallCoordinates()) {
+            world[p.getX()][p.getY()] = Tileset.WALL;
+        }
+        for (Position p : hallway.getFloorCoordinates()) {
+            world[p.getX()][p.getY()] = Tileset.FLOOR;
+        }
+    }*/
 }
 
 //tasks: create rooms, create hallways,

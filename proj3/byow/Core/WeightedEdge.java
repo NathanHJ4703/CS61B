@@ -4,6 +4,7 @@ package byow.Core;
  * Utility class that represents a weighted edge.
  * Created by hug.
  */
+
 public class WeightedEdge<Vertex> {
     private Vertex v;
     private Vertex w;
@@ -14,6 +15,7 @@ public class WeightedEdge<Vertex> {
         this.w = w;
         this.weight = weight;
     }
+
     public Vertex from() {
         return v;
     }
@@ -23,4 +25,5 @@ public class WeightedEdge<Vertex> {
     public double weight() {
         return weight;
     }
+
 }
