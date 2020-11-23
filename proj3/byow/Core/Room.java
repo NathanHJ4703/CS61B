@@ -40,25 +40,6 @@ public class Room {
         connected = false;
     }
 
-/**
-    // Assume that r2 is to the right of r1.
-    public static VerticalHallway connect(Room r1, Room r2) {
-        VerticalHallway x = null;
-        // If bottom left corner of room1 is placed higher than bottom left corner of room2.
-        if (r2.getBottomLeft().getY() < r1.getBottomLeft().getY()) {
-            int depthHallway = r1.random.nextInt(OurWorld.getMaxHeight());
-            while (r1.getBottomLeft().getY() - depthHallway < 0) {
-                depthHallway = r1.random.nextInt(OurWorld.getMaxHeight());
-            }
-            int yPos = r1.getBottomLeft().getY() - depthHallway;
-            int xPos = r1.random.nextInt(r1.width - 2) + r1.getBottomLeft().getX();
-            x = new VerticalHallway(new Position(xPos, yPos), depthHallway, false);
-        }
-        return x;
-    }
-*/
-
-
     public boolean getOverlap() {
         return overlap;
     }
@@ -102,7 +83,6 @@ public class Room {
                 if (x == bottomLeft.getX() || x == (rightSide - 1) || y == bottomLeft.getY() || y == (topSide - 1)) {
                     wallCoordinates.add(new Position(x, y));
                     OurWorld.coveredPositions.add(new Position(x, y));
-                    checkSurroundings(x, y, topSide, rightSide);
                 }
             }
             if (overlap) {
@@ -112,43 +92,6 @@ public class Room {
         }
 
         return wallCoordinates;
-    }
-
-
-    private void checkSurroundings(int x, int y, int topSide, int rightSide) {
-        if (x == bottomLeft.getX() && y != bottomLeft.getY() && y != topSide - 1) {
-            checkLeft(x, y);
-        } else if (x == rightSide - 1 && y != bottomLeft.getY() && y != topSide - 1) {
-            checkRight(x, y);
-        } else if (y == bottomLeft.getY() && x != bottomLeft.getX() && x != rightSide - 1) {
-            checkBottom(x, y);
-        } else if (y == topSide - 1 && x != bottomLeft.getX() && x != rightSide - 1) {
-            checkTop(x, y);
-        }
-    }
-
-    private void checkBottom(int x, int y) {
-        if (overlap(x, y - 1, OurWorld.coveredPositions)) {
-            isBottomOpen = false;
-        }
-    }
-
-    private void checkTop(int x, int y) {
-        if (overlap(x, y + 1, OurWorld.coveredPositions)) {
-            isTopOpen = false;
-        }
-    }
-
-    private void checkRight(int x, int y) {
-        if (overlap(x + 1, y, OurWorld.coveredPositions)) {
-            isRightOpen = false;
-        }
-    }
-
-    private void checkLeft(int x, int y) {
-        if (overlap(x - 1, y, OurWorld.coveredPositions)) {
-            isLeftOpen = false;
-        }
     }
 
 
@@ -256,9 +199,13 @@ public class Room {
 
 
     public static void main(String[] args) {
-        Room r = new Room(new Position(2, 2), 4, 5, new Random(123861));
-        System.out.println(r.random.nextInt(2));
-
+        List<Integer> x = new LinkedList<>();
+        x.add(1);
+        x.add(2);
+        x.add(3);
+        System.out.println(x.remove(0));
+        System.out.println(x.remove(0));
+        System.out.println(x.remove(0));
     }
 
 }

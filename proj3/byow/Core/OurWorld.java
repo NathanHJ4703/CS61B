@@ -26,6 +26,7 @@ public class OurWorld {
     public static Set<Room> distinctRooms = new HashSet<>();
     public static ArrayHeapMinPQ<Room> listOfRooms = new ArrayHeapMinPQ<>();
     public static ArrayHeapMinPQ<Room> isolatedRooms = new ArrayHeapMinPQ<>();
+    public static List<Position> openCoordinates = new LinkedList<>();
 
     public static int getYDimension() {
         return HEIGHT;
@@ -58,27 +59,27 @@ public class OurWorld {
 
         int i = 10000;
         Random rand = new Random(1);
-        while(i > 0) {
-            Room r = new Room(new Position(rand.nextInt(largestX+1), rand.nextInt(largestY+1)),
-                    rand.nextInt(maxWidth+1) + 4, rand.nextInt(maxHeight+1) + 4, rand);
-            addRoom(r, ourWorld);
-            Room sr = new Room(new Position(rand.nextInt(largestX+1), rand.nextInt(largestY+1)),
-                    rand.nextInt(maxSWidth+1) + 4, rand.nextInt(maxSHeight+1) + 4, rand);
-            addRoom(sr, ourWorld);
-            Room tr = new Room(new Position(rand.nextInt(largestX+1), rand.nextInt(largestY+1)),
-                    rand.nextInt(maxTWidth+1) + 4, rand.nextInt(maxTHeight+1) + 4, rand);
-            addRoom(tr, ourWorld);
-            i--;
-        }
-
-
-        //Room r1 = listOfRooms.removeSmallest();
-        //Room r2 = listOfRooms.getSmallest();
-        //addHallway(Room.connect(r1, r2), ourWorld);
-
+        generateRooms(i, rand, ourWorld);
 
         addOpenings(listOfRooms, ourWorld);
+        generateHallways(ourWorld);
+
         ter.renderFrame(ourWorld);
+    }
+
+    private static void generateRooms(int numTrials, Random rand, TETile[][] world) {
+        while (numTrials > 0) {
+            Room r = new Room(new Position(rand.nextInt(largestX+1), rand.nextInt(largestY+1)),
+                    rand.nextInt(maxWidth+1) + 4, rand.nextInt(maxHeight+1) + 4, rand);
+            addRoom(r, world);
+            Room sr = new Room(new Position(rand.nextInt(largestX+1), rand.nextInt(largestY+1)),
+                    rand.nextInt(maxSWidth+1) + 4, rand.nextInt(maxSHeight+1) + 4, rand);
+            addRoom(sr, world);
+            Room tr = new Room(new Position(rand.nextInt(largestX+1), rand.nextInt(largestY+1)),
+                    rand.nextInt(maxTWidth+1) + 4, rand.nextInt(maxTHeight+1) + 4, rand);
+            addRoom(tr, world);
+            numTrials--;
+        }
     }
 
     private static void addRoom(Room room, TETile[][] world) {
@@ -86,8 +87,9 @@ public class OurWorld {
             world[p.getX()][p.getY()] = Tileset.WALL;
         }
         if (!room.getOverlap()) {
-            OurWorld.distinctRooms.add(room);
-            OurWorld.listOfRooms.add(room, room.getBottomLeft().getX());
+            distinctRooms.add(room);
+            listOfRooms.add(room, room.getBottomLeft().getX());
+            isolatedRooms.add(room, room.getBottomLeft().getX());
         }
         for (Position p : room.getFloorCoordinates()) {
             world[p.getX()][p.getY()] = Tileset.FLOOR;
@@ -99,18 +101,27 @@ public class OurWorld {
             Room room = listOfRooms.removeSmallest();
             for (Position p : room.getOpenCoordinates()) {
                 world[p.getX()][p.getY()] = Tileset.FLOOR;
+                openCoordinates.add(p);
             }
         }
     }
 
-/**
-    private static void addHallway(Room hallway, TETile[][] world) {
-        for (Position p : hallway.getWallCoordinates()) {
-            world[p.getX()][p.getY()] = Tileset.WALL;
+    private static void generateHallways(TETile[][] world) {
+        while (openCoordinates.size() > 1) {
+            AStarGraph<Position> pathway = new PathGraph();
+            Position first = openCoordinates.remove(0);
+            Position second = openCoordinates.remove(0);
+            AStarSolver<Position> pathFinder = new AStarSolver<>(pathway, first, second, 30);
+            for (Position p : pathFinder.solution()) {
+                world[p.getX()][p.getY()] = Tileset.FLOOR;
+            }
         }
-        for (Position p : hallway.getFloorCoordinates()) {
-            world[p.getX()][p.getY()] = Tileset.FLOOR;
+        if (openCoordinates.size() == 1) {
+            Position k = openCoordinates.remove(0);
+            world[k.getX()][k.getY()] = Tileset.WALL;
         }
-    }*/
+    }
+
+
 }
 
