@@ -71,10 +71,13 @@ public class Room {
         return height;
     }
 
+
     // Returns a list of all the wall coordinates for the room.
     public List<Position> getWallCoordinates() {
         List<Position> wallCoordinates = new LinkedList<>();
+
         int topSide = bottomLeft.getY() + getHeight();
+        int rightSide = bottomLeft.getX() + getWidth();
         if (topSide > OurWorld.getYDimension() - 4) {
             isTopOpen = false;
         }
@@ -82,7 +85,6 @@ public class Room {
             height--;
             topSide--;
         }
-        int rightSide = bottomLeft.getX() + getWidth();
         if (rightSide > OurWorld.getXDimension() - 4) {
             isRightOpen = false;
         }
@@ -90,6 +92,7 @@ public class Room {
             width--;
             rightSide--;
         }
+
         for (int x = bottomLeft.getX(); x < rightSide; x += 1) {
             for (int y = bottomLeft.getY(); y < topSide; y += 1) {
                 if (overlap(x, y, OurWorld.coveredPositions)) {
@@ -99,6 +102,7 @@ public class Room {
                 if (x == bottomLeft.getX() || x == (rightSide - 1) || y == bottomLeft.getY() || y == (topSide - 1)) {
                     wallCoordinates.add(new Position(x, y));
                     OurWorld.coveredPositions.add(new Position(x, y));
+                    checkSurroundings(x, y, topSide, rightSide);
                 }
             }
             if (overlap) {
@@ -108,6 +112,42 @@ public class Room {
         }
 
         return wallCoordinates;
+    }
+
+    private void checkSurroundings(int x, int y, int topSide, int rightSide) {
+        if (x == bottomLeft.getX() && y != bottomLeft.getY() && y != topSide - 1) {
+            checkLeft(x, y);
+        } else if (x == rightSide - 1 && y != bottomLeft.getY() && y != topSide - 1) {
+            checkRight(x, y);
+        } else if (y == bottomLeft.getY() && x != bottomLeft.getX() && x != rightSide - 1) {
+            checkBottom(x, y);
+        } else if (y == topSide - 1 && x != bottomLeft.getX() && x != rightSide - 1) {
+            checkTop(x, y);
+        }
+    }
+
+    private void checkBottom(int x, int y) {
+        if (overlap(x, y - 1, OurWorld.coveredPositions)) {
+            isBottomOpen = false;
+        }
+    }
+
+    private void checkTop(int x, int y) {
+        if (overlap(x, y + 1, OurWorld.coveredPositions)) {
+            isTopOpen = false;
+        }
+    }
+
+    private void checkRight(int x, int y) {
+        if (overlap(x + 1, y, OurWorld.coveredPositions)) {
+            isRightOpen = false;
+        }
+    }
+
+    private void checkLeft(int x, int y) {
+        if (overlap(x - 1, y, OurWorld.coveredPositions)) {
+            isLeftOpen = false;
+        }
     }
 
     // returns a list of all the floor coordinates for the room.

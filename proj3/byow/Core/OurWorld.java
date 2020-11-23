@@ -25,6 +25,7 @@ public class OurWorld {
     public static Set<Position> coveredPositions = new HashSet<>();
     public static Set<Room> distinctRooms = new HashSet<>();
     public static ArrayHeapMinPQ<Room> listOfRooms = new ArrayHeapMinPQ<>();
+    public static ArrayHeapMinPQ<Room> isolatedRooms = new ArrayHeapMinPQ<>();
 
     public static int getYDimension() {
         return HEIGHT;
