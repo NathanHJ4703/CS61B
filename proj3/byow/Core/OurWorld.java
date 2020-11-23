@@ -63,7 +63,7 @@ public class OurWorld {
 
         addOpenings(listOfRooms, ourWorld);
         generateHallways(ourWorld);
-
+        
         ter.renderFrame(ourWorld);
     }
 
@@ -112,9 +112,7 @@ public class OurWorld {
             Position first = openCoordinates.remove(0);
             Position second = openCoordinates.remove(0);
             AStarSolver<Position> pathFinder = new AStarSolver<>(pathway, first, second, 30);
-            for (Position p : pathFinder.solution()) {
-                world[p.getX()][p.getY()] = Tileset.FLOOR;
-            }
+            generatePaths(pathFinder, world);
         }
         if (openCoordinates.size() == 1) {
             Position k = openCoordinates.remove(0);
@@ -122,6 +120,52 @@ public class OurWorld {
         }
     }
 
+    private static void generatePaths(AStarSolver<Position> path, TETile[][] world) {
+        List<Position> chosenPath = path.solution();
+        for (int i = 0; i < chosenPath.size() - 1; i++) {
+            generatePathsHelper(chosenPath.get(i), chosenPath.get(i + 1), world);
+        }
+    }
 
+    private static void generatePathsHelper(Position first, Position second, TETile[][] world) {
+        if (first.getX() == second.getX()) {
+            int bookmarkY = first.getY();
+            int targetY = second.getY();
+
+            if (bookmarkY > targetY) {
+                while (bookmarkY > targetY) {
+                    world[first.getX()][bookmarkY] = Tileset.FLOOR;
+                    bookmarkY--;
+                }
+
+            } else if (bookmarkY < targetY) {
+                while (bookmarkY < targetY) {
+                    world[first.getX()][bookmarkY] = Tileset.FLOOR;
+                    bookmarkY++;
+                }
+            }
+
+
+        } else if (first.getY() == second.getY()) {
+            int bookmarkX = first.getX();
+            int targetX = second.getX();
+
+            if (bookmarkX > targetX) {
+                while (bookmarkX > targetX) {
+                    world[bookmarkX][first.getY()] = Tileset.FLOOR;
+                    bookmarkX--;
+                }
+
+            } else if (bookmarkX < targetX) {
+                while (bookmarkX < targetX) {
+                    world[bookmarkX][first.getY()] = Tileset.FLOOR;
+                    bookmarkX++;
+                }
+            }
+
+        }
+
+
+    }
 }
 

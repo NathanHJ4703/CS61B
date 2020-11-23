@@ -199,7 +199,7 @@ public class Room {
 
 
     public static void main(String[] args) {
-        List<Integer> x = new LinkedList<>();
+        List<Integer> x = new ArrayList<>();
         x.add(1);
         x.add(2);
         x.add(3);
