@@ -14,10 +14,6 @@ public class Room {
     private boolean connected;
     private Random random;
     private Map<String, Boolean> openSides = new HashMap<>();
-    private boolean noOpenTop;
-    private boolean noOpenLeft;
-    private boolean noOpenRight;
-    private boolean noOpenBot;
 
 
     public Room(Position position, int width, int height, Random random) {
@@ -49,6 +45,7 @@ public class Room {
         overlap = false;
         connected = false;
     }
+
 
     // Assume that r2 is to the right of r1.
     public static VerticalHallway connect(Room r1, Room r2) {
