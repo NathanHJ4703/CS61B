@@ -49,20 +49,20 @@ This class extends the room class and provides methods that create new hallways
 ### OurWorld
 #####   1. main: this main method instantiates all the tiles in our world and generates random rooms with three different max dimensions. Renders the frame for our world. 
 #####   2. addRoom: the addRoom method takes in a room, the world it belongs to and checks if it overlaps with any other rooms.  If the room does not overlap, then the room will be added to distinctRooms and listOfRooms and the WALL & FLOOR Tiles will be set. 
-#####   3. addOpenings:  this method takes in a priority queue containing a list of the rooms in our world and creates openings in the rooms by taking a list of "open" wall coordinates and reassigning these tiles to floor tiles.  
+#####   3. addOpenings: this method takes in a priority queue containing a list of the rooms in our world and creates openings in the rooms by taking a list of "open" wall coordinates and reassigning these tiles to floor tiles. 
+#####   4. generateHallways: 
 ### Room
 #####   1. a) Room: room constructor takes in a position, height, width & a random value and instantiates private variables 
-#####   b)Room(for hallways): constructor overloads room constructor.  Takes in position, height, & width and instantiates the folliowing variables: bottomLeft, width, height, overlap, connected                                                                                                                                                       
-#####   2. connect: 
-#####   3. getWallCoordinates: method creates a list of coordinates in a particular room whose tile is a WALL.  This method checks for overlapping rooms, keeps track of covered positions, and determines what side of the tile's wall will contain an opening.  
-#####   4. getFloorCoordinates: method creates a list of coordinates in a particular room whose tile is FLOOR. This method checks for overlapping rooms, and keeps track of covered positions. 
-#####   5. overlap: method takes in parameters x, y, Set<Position> positions
-#####   6. getOpenCoordinates
-#####   7. openBottom
-#####   8. openTop
-#####   9. openLeft
-#####   10. openRight
-#####   11. main
+#####   b)Room(for hallways): constructor overloads room constructor.  Takes in position, height, & width and instantiates the following variables: bottomLeft, width, height, overlap, connected 
+#####   2. getWallCoordinates: method creates a list of coordinates in a particular room whose tile is a WALL.  This method checks for overlapping rooms, keeps track of covered positions, and determines what side of the tile's wall will contain an opening.  
+#####   3. getFloorCoordinates: method creates a list of coordinates in a particular room whose tile is FLOOR. This method checks for overlapping rooms, and keeps track of covered positions. 
+#####   4. overlap: method takes in parameters x, y, Set<Position> positions and returns a boolean value determining whether Positions of a room have been covered or not. If the creation of a room causes overlap, the room will not be added to the world.
+#####   5. getOpenCoordinates: method that gets a list of Positions that represent an opening in all the worlds in our world which is them passed through a pathfinder in order to construct the hallways of our world.  
+#####   6. openBottom - this method takes in the list of open coordinates and generates a random position that will represent an opening in the bottom side of a room. New Position  generated is added to the list of open coordinates that will pass through the path finder.
+#####   7. openTop - this method takes in the list of open coordinates and generates a random position that will represent an opening in the top side of a room. New Position  generated is added to the list of open coordinates that will pass through the path finder.
+#####   8. openLeft - this method takes in the list of open coordinates and generates a random position that will represent an opening in the left side of a room. New Position  generated is added to the list of open coordinates that will pass through the path finder.
+#####   9. openRight - this method takes in the list of open coordinates and generates a random position that will represent an opening in the right side of a room. New Position  generated is added to the list of open coordinates that will pass through the path finder.
+#####   10. main - 
 
 ### PathGraph
 #####   1. neighbors
