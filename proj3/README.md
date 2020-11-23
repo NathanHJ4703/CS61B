@@ -65,8 +65,8 @@ This class extends the room class and provides methods that create new hallways
 #####   10. main - 
 
 ### PathGraph
-#####   1. neighbors
-#####   2. estimatedDistanceToGoal
+#####   1. neighbors - method takes in a position p and generates a list of four neighbors surrounding each Position (top, bottom, right, left)
+#####   2. estimatedDistanceToGoal - overridden method of AStarGraph
 ### verticalHallway
 #####   1. VerticalHallway
 #####   2. getWallCoordinates
