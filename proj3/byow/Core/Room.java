@@ -7,13 +7,15 @@ import java.util.*;
 
 public class Room {
     private Position bottomLeft;
-    private static final Random RANDOM = new Random();
     private int width;
     private int height;
     private boolean overlap;
     private boolean connected;
     private Random random;
-    private Map<String, Boolean> openSides = new HashMap<>();
+    private boolean isTopOpen;
+    private boolean isRightOpen;
+    private boolean isBottomOpen;
+    private boolean isLeftOpen;
 
 
     public Room(Position position, int width, int height, Random random) {
@@ -23,18 +25,10 @@ public class Room {
         overlap = false;
         connected = false;
         this.random = random;
-        openSides.put("isTopOpen", true);
-        openSides.put("isRightOpen", true);
-        if (getBottomLeft().getY() < 4) {
-            openSides.put("isBottomOpen", false);
-        } else {
-            openSides.put("isBottomOpen", true);
-        }
-        if (getBottomLeft().getX() < 4) {
-            openSides.put("isLeftOpen", false);
-        } else {
-            openSides.put("isLeftOpen", true);
-        }
+        isTopOpen = true;
+        isRightOpen = true;
+        isBottomOpen = getBottomLeft().getY() >= 4;
+        isLeftOpen = getBottomLeft().getX() >= 4;
     }
 
     //For constructing hallways
@@ -46,7 +40,7 @@ public class Room {
         connected = false;
     }
 
-
+/**
     // Assume that r2 is to the right of r1.
     public static VerticalHallway connect(Room r1, Room r2) {
         VerticalHallway x = null;
@@ -62,7 +56,7 @@ public class Room {
         }
         return x;
     }
-
+*/
 
 
     public boolean getOverlap() {
@@ -80,18 +74,20 @@ public class Room {
     // Returns a list of all the wall coordinates for the room.
     public List<Position> getWallCoordinates() {
         List<Position> wallCoordinates = new LinkedList<>();
-        int topSide = bottomLeft.getY() + height;
-        if (topSide > OurWorld.getYDimension()) {
-            openSides.put("isTopOpen", false);
+        int topSide = bottomLeft.getY() + getHeight();
+        if (topSide > OurWorld.getYDimension() - 4) {
+            isTopOpen = false;
         }
         while (topSide > OurWorld.getYDimension()) {
+            height--;
             topSide--;
         }
-        int rightSide = bottomLeft.getX() + width;
-        if (rightSide > OurWorld.getXDimension()) {
-            openSides.put("isRightOpen", false);
+        int rightSide = bottomLeft.getX() + getWidth();
+        if (rightSide > OurWorld.getXDimension() - 4) {
+            isRightOpen = false;
         }
         while (rightSide > OurWorld.getXDimension()) {
+            width--;
             rightSide--;
         }
         for (int x = bottomLeft.getX(); x < rightSide; x += 1) {
@@ -158,9 +154,69 @@ public class Room {
         return bottomLeft;
     }
 
+    // Should be called after calling getWallCoordinates.
+    public List<Position> getOpenCoordinates() {
+        List<Position> openCoordinates = new LinkedList<>();
+        if (isBottomOpen) {
+            openBottom(openCoordinates);
+        }
+        if (isTopOpen) {
+            openTop(openCoordinates);
+        }
+        if (isLeftOpen) {
+            openLeft(openCoordinates);
+        }
+        if (isRightOpen) {
+            openRight(openCoordinates);
+        }
+        return openCoordinates;
+    }
+
+    private void openBottom(List<Position> openCoordinates) {
+        int x = random.nextInt(2);
+        if (x == 0) {
+            return;
+        }
+        int xPos = getBottomLeft().getX() + random.nextInt(getWidth() - 2) + 1;
+        int yPos = getBottomLeft().getY();
+        openCoordinates.add(new Position(xPos, yPos));
+    }
+
+    private void openTop(List<Position> openCoordinates) {
+        int x = random.nextInt(2);
+        if (x == 0) {
+            return;
+        }
+        int xPos = getBottomLeft().getX() + random.nextInt(getWidth()-2) + 1;
+        int yPos = getBottomLeft().getY() + getHeight() - 1;
+        openCoordinates.add(new Position(xPos, yPos));
+    }
+
+    private void openLeft(List<Position> openCoordinates) {
+        int x = random.nextInt(2);
+        if (x == 0) {
+            return;
+        }
+        int xPos = getBottomLeft().getX();
+        int yPos = getBottomLeft().getY() + random.nextInt(getHeight() - 2) + 1;
+        openCoordinates.add(new Position(xPos, yPos));
+    }
+
+    private void openRight(List<Position> openCoordinates) {
+        int x = random.nextInt(2);
+        if (x == 0) {
+            return;
+        }
+        int xPos = getBottomLeft().getX() + getWidth() - 1;
+        int yPos = getBottomLeft().getY() + random.nextInt(getHeight() - 2) + 1;
+        openCoordinates.add(new Position(xPos, yPos));
+    }
+
 
     public static void main(String[] args) {
-        Map<String, Boolean> x = new HashMap<>();
+        Room r = new Room(new Position(2, 2), 4, 5, new Random(123861));
+        System.out.println(r.random.nextInt(2));
+
     }
 
 }

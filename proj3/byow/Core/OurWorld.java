@@ -71,6 +71,7 @@ public class OurWorld {
         //Room r1 = listOfRooms.removeSmallest();
         //Room r2 = listOfRooms.getSmallest();
         //addHallway(Room.connect(r1, r2), ourWorld);
+        addOpenings(listOfRooms, ourWorld);
         ter.renderFrame(ourWorld);
     }
 
@@ -86,6 +87,16 @@ public class OurWorld {
             world[p.getX()][p.getY()] = Tileset.FLOOR;
         }
     }
+
+    private static void addOpenings(ArrayHeapMinPQ<Room> listOfRooms, TETile[][] world) {
+        while (listOfRooms.size() != 0) {
+            Room room = listOfRooms.removeSmallest();
+            for (Position p : room.getOpenCoordinates()) {
+                world[p.getX()][p.getY()] = Tileset.FLOOR;
+            }
+        }
+    }
+
 /**
     private static void addHallway(Room hallway, TETile[][] world) {
         for (Position p : hallway.getWallCoordinates()) {
