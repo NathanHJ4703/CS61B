@@ -2,11 +2,14 @@ package byow.Core;
 
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
+import byow.TileEngine.Tileset;
+
+import java.util.Random;
 
 public class Engine {
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
-    public static final int WIDTH = 80;
+    public static final int WIDTH = 60;
     public static final int HEIGHT = 30;
 
     /**
@@ -46,7 +49,27 @@ public class Engine {
         // See proj3.byow.InputDemo for a demo of how you can make a nice clean interface
         // that works for many different input types.
 
-        TETile[][] finalWorldFrame = null;
+        /** */
+
+        InputThing newWorld = new InputThing(input);
+        TERenderer ter = new TERenderer();
+        ter.initialize(WIDTH, HEIGHT);
+
+        // initialize tiles
+        TETile[][] finalWorldFrame = new TETile[WIDTH][HEIGHT];
+        for (int x = 0; x < WIDTH; x += 1) {
+            for (int y = 0; y < HEIGHT; y += 1) {
+                finalWorldFrame[x][y] = Tileset.NOTHING;
+            }
+        }
+
+        int i = 10000;
+        OurWorld.generateRooms(i, newWorld.rand, finalWorldFrame);
+        OurWorld.addOpenings(OurWorld.listOfRooms, finalWorldFrame);
+        OurWorld.generateHallways(finalWorldFrame, newWorld.rand);
+        OurWorld.connectRooms(newWorld.rand, finalWorldFrame);
+
+
         return finalWorldFrame;
     }
 }

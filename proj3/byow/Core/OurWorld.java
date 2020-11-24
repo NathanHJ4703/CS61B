@@ -70,7 +70,7 @@ public class OurWorld {
         ter.renderFrame(ourWorld);
     }
 
-    private static void generateRooms(int numTrials, Random rand, TETile[][] world) {
+    public static void generateRooms(int numTrials, Random rand, TETile[][] world) {
         while (numTrials > 0) {
             Room r = new Room(new Position(rand.nextInt(largestX+1), rand.nextInt(largestY+1)),
                     rand.nextInt(maxWidth+1) + 4, rand.nextInt(maxHeight+1) + 4, rand);
@@ -85,7 +85,7 @@ public class OurWorld {
         }
     }
 
-    private static void addRoom(Room room, TETile[][] world) {
+    public static void addRoom(Room room, TETile[][] world) {
         for (Position p : room.getWallCoordinates()) {
             world[p.getX()][p.getY()] = Tileset.WALL;
         }
@@ -99,7 +99,7 @@ public class OurWorld {
         }
     }
 
-    private static void addOpenings(LinkedList<Room> listOfRooms, TETile[][] world) {
+    public static void addOpenings(LinkedList<Room> listOfRooms, TETile[][] world) {
         while (listOfRooms.size() != 0) {
             Room room = listOfRooms.remove();
             for (Position p : room.getOpenCoordinates()) {
@@ -109,7 +109,7 @@ public class OurWorld {
         }
     }
 
-    private static void generateHallways(TETile[][] world, Random random) {
+    public static void generateHallways(TETile[][] world, Random random) {
         int i = openCoordinates.size();
         while (i > 1) {
             AStarGraph<Position> pathway = new PathGraph();
@@ -217,7 +217,7 @@ public class OurWorld {
         }
     }
 
-    private static void connectRooms(Random random, TETile[][] world) {
+    public static void connectRooms(Random random, TETile[][] world) {
         for (Room r : listOfRooms) {
             if (!r.isConnected()) {
                 Position hole = r.openHole();
