@@ -76,12 +76,14 @@ public class Room {
 
         for (int x = bottomLeft.getX(); x < rightSide; x += 1) {
             for (int y = bottomLeft.getY(); y < topSide; y += 1) {
+                //If case for covered floor positions as well
                 if (overlap(x, y, OurWorld.coveredPositions)) {
                     overlap = true;
                     break;
                 }
                 if (x == bottomLeft.getX() || x == (rightSide - 1) || y == bottomLeft.getY() || y == (topSide - 1)) {
                     wallCoordinates.add(new Position(x, y));
+                    OurWorld.coveredWallPositions.add(new Position(x, y));
                     OurWorld.coveredPositions.add(new Position(x, y));
                 }
             }
@@ -114,6 +116,7 @@ public class Room {
                 }
                 if (x != bottomLeft.getX() && x != (rightSide - 1) && y != bottomLeft.getY() && y != (topSide - 1)) {
                     floorCoordinates.add(new Position(x, y));
+                    OurWorld.coveredFloorPositions.add(new Position(x, y));
                     OurWorld.coveredPositions.add(new Position(x, y));
                 }
             }
@@ -126,7 +129,7 @@ public class Room {
         return floorCoordinates;
     }
 
-    public boolean overlap(int x, int y, Set<Position> positions) {
+    public static boolean overlap(int x, int y, Set<Position> positions) {
         for (Position p : positions) {
             if (p.getX() == x && p.getY() == y) {
                 return true;

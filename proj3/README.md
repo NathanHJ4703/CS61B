@@ -51,6 +51,7 @@ This class extends the room class and provides methods that create new hallways
 #####   2. addRoom: the addRoom method takes in a room, the world it belongs to and checks if it overlaps with any other rooms.  If the room does not overlap, then the room will be added to distinctRooms and listOfRooms and the WALL & FLOOR Tiles will be set. 
 #####   3. addOpenings: this method takes in a priority queue containing a list of the rooms in our world and creates openings in the rooms by taking a list of "open" wall coordinates and reassigning these tiles to floor tiles. 
 #####   4. generateHallways: This method takes in TETile[][] world and turns the path created by AStarSolver into hallways that connect the rooms of our world.
+#####   5. generatePaths: This method takes in a path from one hole in one room to another hole in the other. 
 ### Room
 #####   1. a) Room: room constructor takes in a position, height, width & a random value and instantiates private variables 
 #####   b)Room(for hallways): constructor overloads room constructor.  Takes in position, height, & width and instantiates the following variables: bottomLeft, width, height, overlap, connected 

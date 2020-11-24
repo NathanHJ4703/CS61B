@@ -22,10 +22,12 @@ public class OurWorld {
     //The maximum limit of which x and y values the bottom left corner of the room can go in order to prevent the problem of out of bounds.
     private static final int largestX = WIDTH - 3;
     private static final int largestY = HEIGHT - 3;
+    public static Set<Position> coveredFloorPositions = new HashSet<>();
+    public static Set<Position> coveredWallPositions = new HashSet<>();
     public static Set<Position> coveredPositions = new HashSet<>();
     public static Set<Room> distinctRooms = new HashSet<>();
-    public static ArrayHeapMinPQ<Room> listOfRooms = new ArrayHeapMinPQ<>();
-    public static ArrayHeapMinPQ<Room> isolatedRooms = new ArrayHeapMinPQ<>();
+    public static LinkedList<Room> listOfRooms = new LinkedList<>();
+    public static LinkedList<Room> isolatedRooms = new LinkedList<>();
     public static List<Position> openCoordinates = new LinkedList<>();
 
     public static int getYDimension() {
@@ -63,7 +65,7 @@ public class OurWorld {
 
         addOpenings(listOfRooms, ourWorld);
         generateHallways(ourWorld);
-        
+
         ter.renderFrame(ourWorld);
     }
 
@@ -88,17 +90,17 @@ public class OurWorld {
         }
         if (!room.getOverlap()) {
             distinctRooms.add(room);
-            listOfRooms.add(room, room.getBottomLeft().getX());
-            isolatedRooms.add(room, room.getBottomLeft().getX());
+            listOfRooms.add(room);
+            isolatedRooms.add(room);
         }
         for (Position p : room.getFloorCoordinates()) {
             world[p.getX()][p.getY()] = Tileset.FLOOR;
         }
     }
 
-    private static void addOpenings(ArrayHeapMinPQ<Room> listOfRooms, TETile[][] world) {
+    private static void addOpenings(LinkedList<Room> listOfRooms, TETile[][] world) {
         while (listOfRooms.size() != 0) {
-            Room room = listOfRooms.removeSmallest();
+            Room room = listOfRooms.remove();
             for (Position p : room.getOpenCoordinates()) {
                 world[p.getX()][p.getY()] = Tileset.FLOOR;
                 openCoordinates.add(p);
@@ -133,16 +135,21 @@ public class OurWorld {
             int targetY = second.getY();
 
             if (bookmarkY > targetY) {
+                checkSurroundings(first.getX(), bookmarkY, world);
                 while (bookmarkY > targetY) {
                     world[first.getX()][bookmarkY] = Tileset.FLOOR;
+                    checkSurroundingsX(first.getX(), bookmarkY, world);
                     bookmarkY--;
                 }
-
+                checkSurroundings(first.getX(), bookmarkY, world);
             } else if (bookmarkY < targetY) {
+                checkSurroundings(first.getX(), bookmarkY, world);
                 while (bookmarkY < targetY) {
                     world[first.getX()][bookmarkY] = Tileset.FLOOR;
+                    checkSurroundingsX(first.getX(), bookmarkY, world);
                     bookmarkY++;
                 }
+                checkSurroundings(first.getX(), bookmarkY, world);
             }
 
 
@@ -151,20 +158,90 @@ public class OurWorld {
             int targetX = second.getX();
 
             if (bookmarkX > targetX) {
+                checkSurroundings(bookmarkX, first.getY(), world);
                 while (bookmarkX > targetX) {
                     world[bookmarkX][first.getY()] = Tileset.FLOOR;
+                    checkSurroundingsY(bookmarkX, first.getY(), world);
                     bookmarkX--;
                 }
-
+                checkSurroundings(bookmarkX, first.getY(), world);
             } else if (bookmarkX < targetX) {
+                checkSurroundings(bookmarkX, first.getY(), world);
                 while (bookmarkX < targetX) {
                     world[bookmarkX][first.getY()] = Tileset.FLOOR;
+                    checkSurroundingsY(bookmarkX, first.getY(), world);
                     bookmarkX++;
                 }
+                checkSurroundings(bookmarkX, first.getY(), world);
             }
 
         }
 
+
+    }
+
+    private static void checkSurroundingsX(int x, int y, TETile[][] world) {
+        if (!Room.overlap(x - 1, y, coveredPositions)) {
+            world[x - 1][y] = Tileset.WALL;
+            coveredPositions.add(new Position(x - 1, y));
+        }
+        if (!Room.overlap(x + 1, y, coveredPositions)) {
+            world[x + 1][y] = Tileset.WALL;
+            coveredPositions.add(new Position(x + 1, y));
+        }
+    }
+
+    private static void checkSurroundingsY(int x, int y, TETile[][] world) {
+        if (!Room.overlap(x, y + 1, coveredPositions)) {
+            world[x][y + 1] = Tileset.WALL;
+            coveredPositions.add(new Position(x, y + 1));
+        }
+        if (!Room.overlap(x, y - 1, coveredPositions)) {
+            world[x][y - 1] = Tileset.WALL;
+            coveredPositions.add(new Position(x, y - 1));
+        }
+    }
+
+    private static void checkSurroundings(int x, int y, TETile[][] world) {
+        //Top left
+        if (!Room.overlap(x - 1, y + 1, coveredPositions)) {
+            world[x - 1][y + 1] = Tileset.WALL;
+            coveredPositions.add(new Position(x - 1, y + 1));
+        }
+
+        //Top right
+        if (!Room.overlap(x + 1, y + 1, coveredPositions)) {
+            world[x + 1][y + 1] = Tileset.WALL;
+            coveredPositions.add(new Position(x + 1, y + 1));
+        }
+
+        //bottom left
+        if (!Room.overlap(x - 1, y - 1, coveredPositions)) {
+            world[x - 1][y - 1] = Tileset.WALL;
+            coveredPositions.add(new Position(x - 1, y - 1));
+        }
+
+        //bottom right
+        if (!Room.overlap(x + 1, y - 1, coveredPositions)) {
+            world[x + 1][y - 1] = Tileset.WALL;
+            coveredPositions.add(new Position(x + 1, y - 1));
+        }
+        if (!Room.overlap(x, y + 1, coveredPositions)) {
+            world[x][y + 1] = Tileset.WALL;
+            coveredPositions.add(new Position(x, y + 1));
+        }
+        if (!Room.overlap(x, y - 1, coveredPositions)) {
+            world[x][y - 1] = Tileset.WALL;
+            coveredPositions.add(new Position(x, y - 1));
+        }
+        if (!Room.overlap(x - 1, y, coveredPositions)) {
+            world[x - 1][y] = Tileset.WALL;
+            coveredPositions.add(new Position(x - 1, y));
+        }
+        if (!Room.overlap(x + 1, y, coveredPositions)) {
+            world[x + 1][y] = Tileset.WALL;
+            coveredPositions.add(new Position(x + 1, y));
+        }
 
     }
 }

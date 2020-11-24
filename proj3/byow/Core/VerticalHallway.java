@@ -28,7 +28,7 @@ public class VerticalHallway extends Room {
             for (int y = 0; y < getHeight(); y++) {
                 if (x == 0 || x == 2 || y == 0) {
                     wallCoordinates.add(new Position(x + getBottomLeft().getX(), y + getBottomLeft().getY()));
-                    OurWorld.coveredPositions.add(new Position(x + getBottomLeft().getX(), y + getBottomLeft().getY()));
+                    OurWorld.coveredWallPositions.add(new Position(x + getBottomLeft().getX(), y + getBottomLeft().getY()));
                 }
             }
         }
@@ -46,7 +46,7 @@ public class VerticalHallway extends Room {
             for (int y = 0; y < getHeight()+1; y++) {
                 if (x == 1 && y != 0) {
                     floorCoordinates.add(new Position(x + getBottomLeft().getX(), y + getBottomLeft().getY()));
-                    OurWorld.coveredPositions.add(new Position(x + getBottomLeft().getX(), y + getBottomLeft().getY()));
+                    //OurWorld.coveredPositions.add(new Position(x + getBottomLeft().getX(), y + getBottomLeft().getY()));
                 }
             }
         }
