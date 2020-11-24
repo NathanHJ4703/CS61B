@@ -16,6 +16,7 @@ public class Room {
     private boolean isRightOpen;
     private boolean isBottomOpen;
     private boolean isLeftOpen;
+    private List<Position> additionalOpenCoordinates;
 
 
     public Room(Position position, int width, int height, Random random) {
@@ -27,6 +28,7 @@ public class Room {
         this.random = random;
         isTopOpen = true;
         isRightOpen = true;
+        additionalOpenCoordinates = new LinkedList<>();
         isBottomOpen = getBottomLeft().getY() >= 4;
         isLeftOpen = getBottomLeft().getX() >= 4;
     }
@@ -38,6 +40,10 @@ public class Room {
         this.height = height;
         overlap = false;
         connected = false;
+    }
+
+    public List<Position> getAdditionalOpenCoordinates() {
+        return additionalOpenCoordinates;
     }
 
     public boolean getOverlap() {
@@ -161,58 +167,92 @@ public class Room {
         if (isRightOpen) {
             openRight(openCoordinates);
         }
+        if (additionalOpenCoordinates.size() > 0) {
+            for(Position p : additionalOpenCoordinates) {
+                openCoordinates.add(p);
+            }
+        }
         return openCoordinates;
     }
 
+    public Position openHole() {
+        List<Position> openCoordinates = new LinkedList<>();
+        if (isBottomOpen) {
+            int xPos = getBottomLeft().getX() + random.nextInt(getWidth() - 2) + 1;
+            int yPos = getBottomLeft().getY();
+            return new Position(xPos, yPos);
+        } else if (isTopOpen) {
+            int xPos = getBottomLeft().getX() + random.nextInt(getWidth()-2) + 1;
+            int yPos = getBottomLeft().getY() + getHeight() - 1;
+            return new Position(xPos, yPos);
+        } else if (isLeftOpen) {
+            int xPos = getBottomLeft().getX();
+            int yPos = getBottomLeft().getY() + random.nextInt(getHeight() - 2) + 1;
+            return new Position(xPos, yPos);
+        }
+        int xPos = getBottomLeft().getX() + getWidth() - 1;
+        int yPos = getBottomLeft().getY() + random.nextInt(getHeight() - 2) + 1;
+        return new Position(xPos, yPos);
+    }
+
     private void openBottom(List<Position> openCoordinates) {
+        /**
         int x = random.nextInt(2);
         if (x == 0) {
             return;
-        }
+        }*/
         int xPos = getBottomLeft().getX() + random.nextInt(getWidth() - 2) + 1;
         int yPos = getBottomLeft().getY();
         openCoordinates.add(new Position(xPos, yPos));
     }
 
     private void openTop(List<Position> openCoordinates) {
+        /**
         int x = random.nextInt(2);
         if (x == 0) {
             return;
-        }
+        }*/
         int xPos = getBottomLeft().getX() + random.nextInt(getWidth()-2) + 1;
         int yPos = getBottomLeft().getY() + getHeight() - 1;
         openCoordinates.add(new Position(xPos, yPos));
     }
 
     private void openLeft(List<Position> openCoordinates) {
+        /**
         int x = random.nextInt(2);
         if (x == 0) {
             return;
-        }
+        }*/
         int xPos = getBottomLeft().getX();
         int yPos = getBottomLeft().getY() + random.nextInt(getHeight() - 2) + 1;
         openCoordinates.add(new Position(xPos, yPos));
     }
 
     private void openRight(List<Position> openCoordinates) {
+        /**
         int x = random.nextInt(2);
         if (x == 0) {
             return;
-        }
+        }*/
         int xPos = getBottomLeft().getX() + getWidth() - 1;
         int yPos = getBottomLeft().getY() + random.nextInt(getHeight() - 2) + 1;
         openCoordinates.add(new Position(xPos, yPos));
     }
 
+    public boolean isConnected() {
+        return getOpenCoordinates().size() != 0;
+    }
+
 
     public static void main(String[] args) {
-        List<Integer> x = new ArrayList<>();
-        x.add(1);
-        x.add(2);
-        x.add(3);
-        System.out.println(x.remove(0));
-        System.out.println(x.remove(0));
-        System.out.println(x.remove(0));
+        List<Position> x = new LinkedList<>();
+        x.add(new Position(3, 4));
+        x.add(new Position(5, 6));
+        x.add(new Position(2, 2));
+        x.add(new Position(4,1));
+        x.add(new Position(7, 1));
+        x.remove(2);
+        Position p = x.remove(3);
     }
 
 }

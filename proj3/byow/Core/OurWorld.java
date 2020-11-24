@@ -60,11 +60,12 @@ public class OurWorld {
         }
 
         int i = 10000;
-        Random rand = new Random(1);
+        Random rand = new Random(2);
         generateRooms(i, rand, ourWorld);
 
         addOpenings(listOfRooms, ourWorld);
-        generateHallways(ourWorld);
+        generateHallways(ourWorld, rand);
+        connectRooms(rand, ourWorld);
 
         ter.renderFrame(ourWorld);
     }
@@ -108,11 +109,24 @@ public class OurWorld {
         }
     }
 
-    private static void generateHallways(TETile[][] world) {
-        while (openCoordinates.size() > 1) {
+    private static void generateHallways(TETile[][] world, Random random) {
+        int i = openCoordinates.size();
+        while (i > 1) {
             AStarGraph<Position> pathway = new PathGraph();
-            Position first = openCoordinates.remove(0);
-            Position second = openCoordinates.remove(0);
+            int index1 = random.nextInt(i);
+            int index2 = random.nextInt(i);
+            Position first = openCoordinates.get(index1);
+            Position second = openCoordinates.get(index2);
+            while (sharedCoordinates(first, second)) {
+                index2 = random.nextInt(i);
+                second = openCoordinates.get(index2);
+            }
+            i = i - 2;
+            openCoordinates.remove(index1);
+            if (index2 > index1) {
+                index2--;
+            }
+            openCoordinates.remove(index2);
             AStarSolver<Position> pathFinder = new AStarSolver<>(pathway, first, second, 30);
             generatePaths(pathFinder, world);
         }
@@ -120,6 +134,15 @@ public class OurWorld {
             Position k = openCoordinates.remove(0);
             world[k.getX()][k.getY()] = Tileset.WALL;
         }
+    }
+
+    private static boolean sharedCoordinates(Position first, Position second) {
+        for (Room r : listOfRooms) {
+            if (r.getOpenCoordinates().contains(first) && r.getOpenCoordinates().contains(second)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static void generatePaths(AStarSolver<Position> path, TETile[][] world) {
@@ -138,6 +161,8 @@ public class OurWorld {
                 checkSurroundings(first.getX(), bookmarkY, world);
                 while (bookmarkY > targetY) {
                     world[first.getX()][bookmarkY] = Tileset.FLOOR;
+                    //Add open coordinates.
+                    addOpenCoordinates(first.getX(), bookmarkY);
                     checkSurroundingsX(first.getX(), bookmarkY, world);
                     bookmarkY--;
                 }
@@ -146,6 +171,7 @@ public class OurWorld {
                 checkSurroundings(first.getX(), bookmarkY, world);
                 while (bookmarkY < targetY) {
                     world[first.getX()][bookmarkY] = Tileset.FLOOR;
+                    addOpenCoordinates(first.getX(), bookmarkY);
                     checkSurroundingsX(first.getX(), bookmarkY, world);
                     bookmarkY++;
                 }
@@ -161,6 +187,7 @@ public class OurWorld {
                 checkSurroundings(bookmarkX, first.getY(), world);
                 while (bookmarkX > targetX) {
                     world[bookmarkX][first.getY()] = Tileset.FLOOR;
+                    addOpenCoordinates(bookmarkX, first.getY());
                     checkSurroundingsY(bookmarkX, first.getY(), world);
                     bookmarkX--;
                 }
@@ -169,6 +196,7 @@ public class OurWorld {
                 checkSurroundings(bookmarkX, first.getY(), world);
                 while (bookmarkX < targetX) {
                     world[bookmarkX][first.getY()] = Tileset.FLOOR;
+                    addOpenCoordinates(bookmarkX, first.getY());
                     checkSurroundingsY(bookmarkX, first.getY(), world);
                     bookmarkX++;
                 }
@@ -178,6 +206,27 @@ public class OurWorld {
         }
 
 
+    }
+
+    private static void addOpenCoordinates(int x, int y) {
+        Position p = new Position(x, y);
+        for (Room r : listOfRooms) {
+            if (r.getWallCoordinates().contains(p)) {
+                r.getAdditionalOpenCoordinates().add(p);
+            }
+        }
+    }
+
+    private static void connectRooms(Random random, TETile[][] world) {
+        for (Room r : listOfRooms) {
+            if (!r.isConnected()) {
+                Position hole = r.openHole();
+                int index = random.nextInt(openCoordinates.size());
+                Position target = openCoordinates.get(index);
+                PathGraph newPath = new PathGraph();
+                generatePaths(new AStarSolver<>(newPath, hole, target, 30), world);
+            }
+        }
     }
 
     private static void checkSurroundingsX(int x, int y, TETile[][] world) {
