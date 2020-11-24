@@ -60,7 +60,7 @@ public class OurWorld {
         }
 
         int i = 10000;
-        Random rand = new Random(2);
+        Random rand = new Random(35);
         generateRooms(i, rand, ourWorld);
 
         addOpenings(listOfRooms, ourWorld);

@@ -196,44 +196,44 @@ public class Room {
     }
 
     private void openBottom(List<Position> openCoordinates) {
-        /**
+
         int x = random.nextInt(2);
         if (x == 0) {
             return;
-        }*/
+        }
         int xPos = getBottomLeft().getX() + random.nextInt(getWidth() - 2) + 1;
         int yPos = getBottomLeft().getY();
         openCoordinates.add(new Position(xPos, yPos));
     }
 
     private void openTop(List<Position> openCoordinates) {
-        /**
+
         int x = random.nextInt(2);
         if (x == 0) {
             return;
-        }*/
+        }
         int xPos = getBottomLeft().getX() + random.nextInt(getWidth()-2) + 1;
         int yPos = getBottomLeft().getY() + getHeight() - 1;
         openCoordinates.add(new Position(xPos, yPos));
     }
 
     private void openLeft(List<Position> openCoordinates) {
-        /**
+
         int x = random.nextInt(2);
         if (x == 0) {
             return;
-        }*/
+        }
         int xPos = getBottomLeft().getX();
         int yPos = getBottomLeft().getY() + random.nextInt(getHeight() - 2) + 1;
         openCoordinates.add(new Position(xPos, yPos));
     }
 
     private void openRight(List<Position> openCoordinates) {
-        /**
+
         int x = random.nextInt(2);
         if (x == 0) {
             return;
-        }*/
+        }
         int xPos = getBottomLeft().getX() + getWidth() - 1;
         int yPos = getBottomLeft().getY() + random.nextInt(getHeight() - 2) + 1;
         openCoordinates.add(new Position(xPos, yPos));
