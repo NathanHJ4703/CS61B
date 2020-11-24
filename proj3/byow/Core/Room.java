@@ -56,6 +56,7 @@ public class Room {
     // Returns a list of all the wall coordinates for the room.
     public List<Position> getWallCoordinates() {
         List<Position> wallCoordinates = new LinkedList<>();
+        Set<Position> tempCovered = new HashSet<>();
 
         int topSide = bottomLeft.getY() + getHeight();
         int rightSide = bottomLeft.getX() + getWidth();
@@ -76,23 +77,26 @@ public class Room {
 
         for (int x = bottomLeft.getX(); x < rightSide; x += 1) {
             for (int y = bottomLeft.getY(); y < topSide; y += 1) {
-                //If case for covered floor positions as well
                 if (overlap(x, y, OurWorld.coveredPositions)) {
                     overlap = true;
                     break;
                 }
                 if (x == bottomLeft.getX() || x == (rightSide - 1) || y == bottomLeft.getY() || y == (topSide - 1)) {
                     wallCoordinates.add(new Position(x, y));
-                    OurWorld.coveredWallPositions.add(new Position(x, y));
-                    OurWorld.coveredPositions.add(new Position(x, y));
+                    tempCovered.add(new Position(x, y));
+                    //OurWorld.coveredWallPositions.add(new Position(x, y));
                 }
             }
-            if (overlap) {
+            if (getOverlap()) {
                 wallCoordinates = new LinkedList<>();
                 break;
             }
         }
-
+        if (!getOverlap()) {
+            for (Position p : tempCovered) {
+                OurWorld.coveredPositions.add(p);
+            }
+        }
         return wallCoordinates;
     }
 
@@ -116,7 +120,7 @@ public class Room {
                 }
                 if (x != bottomLeft.getX() && x != (rightSide - 1) && y != bottomLeft.getY() && y != (topSide - 1)) {
                     floorCoordinates.add(new Position(x, y));
-                    OurWorld.coveredFloorPositions.add(new Position(x, y));
+                    //OurWorld.coveredFloorPositions.add(new Position(x, y));
                     OurWorld.coveredPositions.add(new Position(x, y));
                 }
             }

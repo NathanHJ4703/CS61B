@@ -22,8 +22,8 @@ public class OurWorld {
     //The maximum limit of which x and y values the bottom left corner of the room can go in order to prevent the problem of out of bounds.
     private static final int largestX = WIDTH - 3;
     private static final int largestY = HEIGHT - 3;
-    public static Set<Position> coveredFloorPositions = new HashSet<>();
-    public static Set<Position> coveredWallPositions = new HashSet<>();
+    //public static Set<Position> coveredFloorPositions = new HashSet<>();
+    //public static Set<Position> coveredWallPositions = new HashSet<>();
     public static Set<Position> coveredPositions = new HashSet<>();
     public static Set<Room> distinctRooms = new HashSet<>();
     public static LinkedList<Room> listOfRooms = new LinkedList<>();
