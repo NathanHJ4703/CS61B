@@ -52,8 +52,8 @@ public class Engine {
         /** */
 
         InputThing newWorld = new InputThing(input);
-        TERenderer ter = new TERenderer();
-        ter.initialize(WIDTH, HEIGHT);
+        //TERenderer ter = new TERenderer();
+        //ter.initialize(WIDTH, HEIGHT);
 
         // initialize tiles
         TETile[][] finalWorldFrame = new TETile[WIDTH][HEIGHT];
