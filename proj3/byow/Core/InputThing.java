@@ -36,7 +36,7 @@ public class InputThing {
         for (Character c : characters) {
             seedString += Character.toString(c);
         }
-        seed = Integer.parseInt(seedString);
+        seed = Long.parseLong(seedString);
         rand = new Random(seed);
     }
 }
