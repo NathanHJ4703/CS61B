@@ -34,7 +34,6 @@ public class OurWorld {
     public static Map<Integer, Room> numberToRoom = new HashMap<>();
     public static Map<Position, Room> openToRoom = new HashMap<>();
     public static Map<Position, Room> wallToRoom = new HashMap<>();
-    public static Map<Integer, Integer> verticesToConnect = new HashMap<>();
 
     public static int getYDimension() {
         return HEIGHT;
@@ -80,16 +79,11 @@ public class OurWorld {
         addOpenings(listOfRooms, ourWorld, rand);
         generateHallways(ourWorld, rand);
         connectRooms(rand, ourWorld);
-        //addConnections();
+
 
         ter.renderFrame(ourWorld);
     }
 
-    public static void addConnections() {
-        for (Integer i : verticesToConnect.keySet()) {
-            roomsToConnect.connect(i, verticesToConnect.get(i));
-        }
-    }
 
 
     public static void generateRooms(int numTrials, Random rand, TETile[][] world) {
@@ -167,7 +161,7 @@ public class OurWorld {
             world[k.getX()][k.getY()] = Tileset.WALL;
         }
     }
-
+/**
     //Checks to see if there is one root, by checking if the parent of that root is negative, then tells if the world is connected if the size of that root is equal to the total number of rooms.
     private static boolean isWorldConnected() {
         for (int i = 0; i < roomsToConnect.parent.length; i++) {
@@ -180,7 +174,7 @@ public class OurWorld {
             }
         }
         return false;
-    }
+    }*/
 
     public static boolean sharedCoordinates(Position first, Position second) {
         return openToRoom.get(first).equals(openToRoom.get(second));
@@ -273,7 +267,9 @@ public class OurWorld {
 //Can we assume that if there is an open coordinate in a room r, the room is connected?
     //For each room that has a negative parent, connect that room with a room that has a positive parent. Assumes that world is not yet connected.
     public static void connectRooms(Random random, TETile[][] world) {
+        Map<Integer, Integer> verticesToConnect = new HashMap<>();
         for (int i = 0; i < roomsToConnect.parent.length; i++) {
+
 
             if (roomsToConnect.parent[i] < 0) {
                 Room toConnect = numberToRoom.get(i);
@@ -305,6 +301,9 @@ public class OurWorld {
                 PathGraph newPath = new PathGraph();
                 generatePaths(new AStarSolver<>(newPath, start, target, 30), world);
             }
+        }
+        for (Integer i : verticesToConnect.keySet()) {
+            roomsToConnect.connect(i, verticesToConnect.get(i));
         }
         /**
         for (Room r : listOfRooms) {

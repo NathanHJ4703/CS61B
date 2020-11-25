@@ -8,7 +8,7 @@ Monse Lopez
 ### OurWorld: 
 This class provides static methods that allow us to instantiate the tiles in our world as well as add rooms 
 
-####    Instance Variables: 
+####    Static Variables: 
 #####   1. int WIDTH - of ourWorld
 #####   2. int HEIGHT - of ourWorld
 #####   3. int maxWidth - maximum width for the BIG rooms
@@ -30,8 +30,10 @@ This class provides static methods that allow us to instantiate the tiles in our
 #####   19. Map<Position, Room> openToRoom - Gets the position of the room where there is an opening(a Tileset.NOTHING).
 #####   20. Map<Position, Room> wallToRoom - Gets the position of the room where there is a wall.
 #####   21. Map<Integer, Integer> verticesToConnect - A map to store the pair of vertices to connect in UnionFind at the end to ensure connectedness.
-This class provides methods that construct the rooms/hallways in our world and joins them together.  This class also contains a method that tracks the open positions in our world.   
+This class provides methods that construct the rooms in our world and joins them together.  This class also contains a method that tracks the open positions in our world.   
 
+### Room
+#### Instance Variables:
 #####   1. Position bottomLeft - represents the bottom left tile of each room 
 #####   2. int width - width of room 
 #####   3. int height - height of room 
@@ -54,12 +56,20 @@ This class extends the room class and provides methods that create new hallways
 ### OurWorld
 #####   1. main: this main method instantiates all the tiles in our world and generates random rooms with three different max dimensions. Renders the frame for our world. 
 #####   2. addRoom: the addRoom method takes in a room, the world it belongs to and checks if it overlaps with any other rooms.  If the room does not overlap, then the room will be added to distinctRooms and listOfRooms and the WALL & FLOOR Tiles will be set. 
-#####   3. addOpenings: this method takes in a priority queue containing a list of the rooms in our world and creates openings in the rooms by taking a list of "open" wall coordinates and reassigning these tiles to floor tiles. 
+#####   3. addOpenings: this method takes in a list of the rooms in our world and creates openings in the rooms by taking a list of "open" wall coordinates and reassigning these tiles to floor tiles. 
 #####   4. generateHallways: This method takes in TETile[][] world and turns the path created by AStarSolver into hallways that connect the rooms of our world.
 #####   5. generatePaths: This method takes in a path from one hole in one room to another hole in the other. 
+#####   6. sharedCoordinates: Determines if two open coordinates(which are the holes to connect) are part of the same room.
+#####   7. roomsConnected: Determines if two rooms are connected using a disjoint set data structure roomsToConnect.
+#####   8. deleteWallCoordinates: removes the wall position from the room in the wallToRoom hashmap and coveredWallPositions list.
+#####   9. addOpenCoordinates: This method adds open coordinates to the list of all the open coordinates in the world after generating paths that have possibly led to openings of rooms. 
+#####   10. connectRooms: Assumes that the world is not connected. Connects the open coordinate of one room to another. It does so until all the unconnected rooms that were not connected from generateHallways have been connected by using a disjoint set data structure roomsToConnect. Then, it adds the change to the disjoint set data structure roomsToConnect.
+#####   11. checkSurroundings: Checks if there are any covered positions(either floor or wall) surrounding the given position(diagonally, horizontally, and vertically) not used up by the world. If one of the position is Tileset.nothing, add a wall tile. Otherwise, do not do anything. This method only applies to the coordinates of solution vertices given by A* solver
+#####   12. checkSurroundingsX: Checks if there are any covered positions(either floor or wall) from left and right. If a left or right position has no covered positions, place a wall tile. This applies to the coordinates where paths are being generated from one solution vertex to another vertically.
+####    13. checkSurroundingsY: Checks if there are any covered positions(either floor or wall) from top and bottom. If a top or bottom position has no covered positions, place a wall tile. This applies to the coordinates where paths are being generated from one solution vertex to another horizontally.
+####    
 ### Room
-#####   1. a) Room: room constructor takes in a position, height, width & a random value and instantiates private variables 
-#####   b)Room(for hallways): constructor overloads room constructor.  Takes in position, height, & width and instantiates the following variables: bottomLeft, width, height, overlap, connected 
+#####   1. Room: room constructor takes in a position, height, width & a random value and instantiates private variables 
 #####   2. getWallCoordinates: method creates a list of coordinates in a particular room whose tile is a WALL.  This method checks for overlapping rooms, keeps track of covered positions, and determines what side of the tile's wall will contain an opening.  
 #####   3. getFloorCoordinates: method creates a list of coordinates in a particular room whose tile is FLOOR. This method checks for overlapping rooms, and keeps track of covered positions. 
 #####   4. overlap: method takes in parameters x, y, Set<Position> positions and returns a boolean value determining whether Positions of a room have been covered or not. If the creation of a room causes overlap, the room will not be added to the world.
@@ -68,16 +78,13 @@ This class extends the room class and provides methods that create new hallways
 #####   7. openTop - this method takes in the list of open coordinates and generates a random position that will represent an opening in the top side of a room. New Position  generated is added to the list of open coordinates that will pass through the path finder.
 #####   8. openLeft - this method takes in the list of open coordinates and generates a random position that will represent an opening in the left side of a room. New Position  generated is added to the list of open coordinates that will pass through the path finder.
 #####   9. openRight - this method takes in the list of open coordinates and generates a random position that will represent an opening in the right side of a room. New Position  generated is added to the list of open coordinates that will pass through the path finder.
-#####   10. main - 
+#####   10. openHole - Opens the room from a random wall coordinate.
 
 ### PathGraph
 #####   1. neighbors - method takes in a position p and generates a list of four neighbors surrounding each Position (top, bottom, right, left)
 #####   2. estimatedDistanceToGoal - overridden method of AStarGraph
-### verticalHallway
-#####   1. VerticalHallway - this method has parameters: Position p, int height, boolean goingUp.  This constructor instantiates a room with a starting position, static width 3, and a given height. 
-#####   2. getWallCoordinates - this method returns a list of wall coordinates generated by the downwardWall method. 
-#####   3. downwardWall - this method takes in a list of Positions of the wall coordinates in our world and will update the list of wall positions and covered positions in our world. The list of wall coordinates will then allow us to generate WALL tiles in the correct Positions, the updated coveredPositions list will help prevent overlapping. 
-#####   4. getFloorCoordinates - this method returns a list of floor coordinates generated by the downwardWall method. 
-#####   5. downwardFloor  -  this method takes in a list of Positions of the floor coordinates in our world and will update the list of floor positions and covered positions in our world. The list of wall coordinates will then allow us to generate FLOOR tiles in the correct Positions, the updated coveredPositions list will help prevent overlapping. 
+
+
+
 ## Persistence
 
