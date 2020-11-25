@@ -24,7 +24,12 @@ This class provides static methods that allow us to instantiate the tiles in our
 #####   13. ArrayHeapMinPQ<Room> listOfRooms - Priority Queue tracks the rooms generated 
 #####   14. ArrayHeapMinPQ<Room> isolatedRooms - Priority Queue tracks the rooms that are not right next to any other rooms in our world. 
 #####   15. List<Position> openCoordinates - List of Positions in each room that contains an "opening" in the WALL surrounding - list used to give a path for A* Solver to follow. 
-### Room
+#####   16. UnionFind roomsToConnect - Disjoint Set data structure for keeping track of connecting all the rooms in the world
+#####    17. Map<Room, Integer> roomToNumber - Get the number id of the room in UnionFind roomsToConnect for the corresponding room.
+#####   18. Map<Integer, Room> numberToRoom - Gets the room from the number id of UnionFind roomsToConnect.
+#####   19. Map<Position, Room> openToRoom - Gets the position of the room where there is an opening(a Tileset.NOTHING).
+#####   20. Map<Position, Room> wallToRoom - Gets the position of the room where there is a wall.
+#####   21. Map<Integer, Integer> verticesToConnect - A map to store the pair of vertices to connect in UnionFind at the end to ensure connectedness.
 This class provides methods that construct the rooms/hallways in our world and joins them together.  This class also contains a method that tracks the open positions in our world.   
 
 #####   1. Position bottomLeft - represents the bottom left tile of each room 

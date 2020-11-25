@@ -11,40 +11,27 @@ public class Room {
     private int height;
     private boolean overlap;
     private boolean connected;
-    private Random random;
     private boolean isTopOpen;
     private boolean isRightOpen;
     private boolean isBottomOpen;
     private boolean isLeftOpen;
-    private List<Position> additionalOpenCoordinates;
+    //Wall coordinates before and after calling generating hallway paths.
 
 
-    public Room(Position position, int width, int height, Random random) {
-        bottomLeft = position;
-        this.width = width;
-        this.height = height;
-        overlap = false;
-        connected = false;
-        this.random = random;
-        isTopOpen = true;
-        isRightOpen = true;
-        additionalOpenCoordinates = new LinkedList<>();
-        isBottomOpen = getBottomLeft().getY() >= 4;
-        isLeftOpen = getBottomLeft().getX() >= 4;
-    }
-
-    //For constructing hallways
     public Room(Position position, int width, int height) {
         bottomLeft = position;
         this.width = width;
         this.height = height;
         overlap = false;
         connected = false;
+        isTopOpen = true;
+        isRightOpen = true;
+
+        isBottomOpen = getBottomLeft().getY() >= 4;
+        isLeftOpen = getBottomLeft().getX() >= 4;
     }
 
-    public List<Position> getAdditionalOpenCoordinates() {
-        return additionalOpenCoordinates;
-    }
+
 
     public boolean getOverlap() {
         return overlap;
@@ -90,7 +77,8 @@ public class Room {
                 if (x == bottomLeft.getX() || x == (rightSide - 1) || y == bottomLeft.getY() || y == (topSide - 1)) {
                     wallCoordinates.add(new Position(x, y));
                     tempCovered.add(new Position(x, y));
-                    //OurWorld.coveredWallPositions.add(new Position(x, y));
+                    OurWorld.coveredWallPositions.add(new Position(x, y));
+                    OurWorld.wallToRoom.put(new Position(x, y), this);
                 }
             }
             if (getOverlap()) {
@@ -153,30 +141,31 @@ public class Room {
     }
 
     // Should be called after calling getWallCoordinates.
-    public List<Position> getOpenCoordinates() {
+    public List<Position> getOpenCoordinates(Random random) {
         List<Position> openCoordinates = new LinkedList<>();
         if (isBottomOpen) {
-            openBottom(openCoordinates);
+            openBottom(openCoordinates, random);
         }
         if (isTopOpen) {
-            openTop(openCoordinates);
+            openTop(openCoordinates, random);
         }
         if (isLeftOpen) {
-            openLeft(openCoordinates);
+            openLeft(openCoordinates, random);
         }
         if (isRightOpen) {
-            openRight(openCoordinates);
+            openRight(openCoordinates, random);
         }
+        /**
         if (additionalOpenCoordinates.size() > 0) {
             for(Position p : additionalOpenCoordinates) {
                 openCoordinates.add(p);
             }
-        }
+        }*/
         return openCoordinates;
     }
 
-    public Position openHole() {
-        List<Position> openCoordinates = new LinkedList<>();
+    //Creates a randomly generated hole in the room.
+    public Position openHole(Random random) {
         if (isBottomOpen) {
             int xPos = getBottomLeft().getX() + random.nextInt(getWidth() - 2) + 1;
             int yPos = getBottomLeft().getY();
@@ -195,7 +184,7 @@ public class Room {
         return new Position(xPos, yPos);
     }
 
-    private void openBottom(List<Position> openCoordinates) {
+    private void openBottom(List<Position> openCoordinates, Random random) {
 
         int x = random.nextInt(2);
         if (x == 0) {
@@ -206,7 +195,7 @@ public class Room {
         openCoordinates.add(new Position(xPos, yPos));
     }
 
-    private void openTop(List<Position> openCoordinates) {
+    private void openTop(List<Position> openCoordinates, Random random) {
 
         int x = random.nextInt(2);
         if (x == 0) {
@@ -217,7 +206,7 @@ public class Room {
         openCoordinates.add(new Position(xPos, yPos));
     }
 
-    private void openLeft(List<Position> openCoordinates) {
+    private void openLeft(List<Position> openCoordinates, Random random) {
 
         int x = random.nextInt(2);
         if (x == 0) {
@@ -228,7 +217,7 @@ public class Room {
         openCoordinates.add(new Position(xPos, yPos));
     }
 
-    private void openRight(List<Position> openCoordinates) {
+    private void openRight(List<Position> openCoordinates, Random random) {
 
         int x = random.nextInt(2);
         if (x == 0) {
@@ -239,20 +228,39 @@ public class Room {
         openCoordinates.add(new Position(xPos, yPos));
     }
 
-    public boolean isConnected() {
+    /**public boolean isConnected() {
         return getOpenCoordinates().size() != 0;
+    }*/
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Room)) return false;
+        Room room = (Room) o;
+        return getWidth() == room.getWidth() &&
+                getHeight() == room.getHeight() &&
+                getOverlap() == room.getOverlap() &&
+                isTopOpen == room.isTopOpen &&
+                isRightOpen == room.isRightOpen &&
+                isBottomOpen == room.isBottomOpen &&
+                isLeftOpen == room.isLeftOpen &&
+                Objects.equals(getBottomLeft(), room.getBottomLeft());
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(getBottomLeft(), getWidth(), getHeight(), getOverlap(), isTopOpen, isRightOpen, isBottomOpen, isLeftOpen);
+    }
 
     public static void main(String[] args) {
-        List<Position> x = new LinkedList<>();
-        x.add(new Position(3, 4));
-        x.add(new Position(5, 6));
-        x.add(new Position(2, 2));
-        x.add(new Position(4,1));
-        x.add(new Position(7, 1));
-        x.remove(2);
-        Position p = x.remove(3);
+        Room r = new Room(new Position(7, 23), 5, 7);
+        OurWorld.roomToNumber.put(new Room(new Position(7, 23), 5, 7), 1);
+        System.out.println(OurWorld.roomToNumber.get(new Room(new Position(7, 23), 5, 7)));
+        System.out.println(r.equals(new Room(new Position(7, 23), 5, 7)));
+
+        Map<Position, Integer> x = new HashMap<>();
+        x.put(new Position(3, 4), 1);
+        System.out.println(x.get(new Position(3, 4)));
     }
 
 }

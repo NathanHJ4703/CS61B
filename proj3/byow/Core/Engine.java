@@ -65,7 +65,7 @@ public class Engine {
 
         int i = 10000;
         OurWorld.generateRooms(i, newWorld.rand, finalWorldFrame);
-        OurWorld.addOpenings(OurWorld.listOfRooms, finalWorldFrame);
+        OurWorld.addOpenings(OurWorld.listOfRooms, finalWorldFrame, newWorld.rand);
         OurWorld.generateHallways(finalWorldFrame, newWorld.rand);
         OurWorld.connectRooms(newWorld.rand, finalWorldFrame);
 
