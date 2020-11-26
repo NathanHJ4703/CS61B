@@ -57,6 +57,7 @@ public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
             best = pq.removeSmallest();
             visitedNodes.add(best);
             numStates++;
+
             if (sw.elapsedTime() > timeout) {
                 result = SolverOutcome.TIMEOUT;
                 break;
