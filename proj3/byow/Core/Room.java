@@ -15,7 +15,7 @@ public class Room {
     private boolean isRightOpen;
     private boolean isBottomOpen;
     private boolean isLeftOpen;
-    //Wall coordinates before and after calling generating hallway paths.
+    private List<Position> walls;
 
 
     public Room(Position position, int width, int height) {
@@ -26,9 +26,9 @@ public class Room {
         connected = false;
         isTopOpen = true;
         isRightOpen = true;
-
         isBottomOpen = getBottomLeft().getY() >= 4;
         isLeftOpen = getBottomLeft().getX() >= 4;
+        walls = new LinkedList<>();
     }
 
 
@@ -46,7 +46,7 @@ public class Room {
     }
 
 
-    // Returns a list of all the wall coordinates for the room.
+    // Returns a list of all the wall coordinates for the room and creates the room in the world. Only used for generating rooms in the world.
     public List<Position> getWallCoordinates() {
         List<Position> wallCoordinates = new LinkedList<>();
         Set<Position> tempCovered = new HashSet<>();
@@ -89,10 +89,17 @@ public class Room {
         if (!getOverlap()) {
             for (Position p : tempCovered) {
                 OurWorld.coveredPositions.add(p);
+                walls.add(p);
             }
         }
         return wallCoordinates;
     }
+
+    public List<Position> getWalls() {
+        return walls;
+    }
+
+
 
 
     // returns a list of all the floor coordinates for the room.
@@ -164,7 +171,7 @@ public class Room {
         return openCoordinates;
     }
 
-    //Creates a randomly generated hole in the room.
+    //Creates a randomly generated hole in a closed room.
     public Position openHole(Random random) {
         if (isBottomOpen) {
             int xPos = getBottomLeft().getX() + random.nextInt(getWidth() - 2) + 1;

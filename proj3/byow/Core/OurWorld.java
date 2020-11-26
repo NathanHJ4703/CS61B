@@ -124,6 +124,7 @@ public class OurWorld {
                 world[p.getX()][p.getY()] = Tileset.FLOOR;
                 openCoordinates.add(p);
                 openToRoom.put(p, room);
+                wallToRoom.remove(p);
             }
         }
     }
@@ -262,11 +263,13 @@ public class OurWorld {
         for (Room r : listOfRooms) {
             if (r.getWallCoordinates().contains(p)) {
                 openCoordinates.add(p);
+                openToRoom.put(p, r);
             }
         }
     }
 //Can we assume that if there is an open coordinate in a room r, the room is connected?
     //For each room that has a negative parent, connect that room with a room that has a positive parent. Assumes that world is not yet connected.
+    //Once called, does this method guarantee that all the rooms will be connected?
     public static void connectRooms(Random random, TETile[][] world) {
         Map<Integer, Integer> verticesToConnect = new HashMap<>();
         for (int i = 0; i < roomsToConnect.parent.length; i++) {
@@ -282,41 +285,85 @@ public class OurWorld {
                 int index = random.nextInt(coveredWallPositions.size());
                 Position target = coveredWallPositions.get(index);
                 Room targetRoom = wallToRoom.get(target);
-                openToRoom.put(target, targetRoom);
-                while (sharedCoordinates(start, target)) {
+                //To ensure connectedness, get the parent room of that room.
+                Room parentRoom = numberToRoom.get(roomsToConnect.find(roomToNumber.get(targetRoom)));
+
+                //Get a random wall coordinate from the parent room.
+                int indexParent = random.nextInt(parentRoom.getWalls().size());
+                //randomWall could be an open coordinate of the parent room
+                Position randomWall = parentRoom.getWalls().get(indexParent);
+                //check that it is not an open coordinate of the parent room. If it is an open coordinate, then keep picking until you found a wall coordinate
+                while (openToRoom.containsKey(randomWall)) {
+                    indexParent = random.nextInt(parentRoom.getWalls().size());
+                    randomWall = parentRoom.getWalls().get(indexParent);
+                }
+
+
+                openToRoom.put(randomWall, parentRoom);
+                while (sharedCoordinates(start, randomWall)) {
+
+                    openToRoom.remove(randomWall);
+
                     index = random.nextInt(coveredWallPositions.size());
                     target = coveredWallPositions.get(index);
                     targetRoom = wallToRoom.get(target);
-                    openToRoom.put(target, targetRoom);
+                    parentRoom = numberToRoom.get(roomsToConnect.find(roomToNumber.get(targetRoom)));
+                    indexParent = random.nextInt(parentRoom.getWalls().size());
+                    randomWall = parentRoom.getWalls().get(indexParent);
+                    while (openToRoom.containsKey(randomWall)) {
+                        indexParent = random.nextInt(parentRoom.getWalls().size());
+                        randomWall = parentRoom.getWalls().get(indexParent);
+                    }
+
+                    openToRoom.put(randomWall, parentRoom);
                 }
 
                 //Delete the wall coordinate
-                wallToRoom.remove(target);
-                coveredWallPositions.remove(target);
-                world[target.getX()][target.getY()] = Tileset.FLOOR;
+                wallToRoom.remove(randomWall);
+                coveredWallPositions.remove(randomWall);
+                world[randomWall.getX()][randomWall.getY()] = Tileset.FLOOR;
 
                 //Add the change to the disjoint set later
-                verticesToConnect.put(roomToNumber.get(openToRoom.get(start)), roomToNumber.get(openToRoom.get(target)));
+                verticesToConnect.put(roomToNumber.get(openToRoom.get(start)), roomToNumber.get(openToRoom.get(randomWall)));
 
                 //Generate the path
                 PathGraph newPath = new PathGraph();
-                generatePaths(new AStarSolver<>(newPath, start, target, 30), world);
+                generatePaths(new AStarSolver<>(newPath, start, randomWall, 30), world);
             }
         }
         for (Integer i : verticesToConnect.keySet()) {
             roomsToConnect.connect(i, verticesToConnect.get(i));
         }
-        /**
-        for (Room r : listOfRooms) {
-            if (!r.isConnected()) {
-                Position hole = r.openHole();
-                int index = random.nextInt(openCoordinates.size());
-                Position target = openCoordinates.get(index);
-                PathGraph newPath = new PathGraph();
-                generatePaths(new AStarSolver<>(newPath, hole, target, 30), world);
-            }
-        }*/
     }
+
+    /**
+    //Takes in an object of type random and an integer.
+    private static void getOpenParentCoordinate(int i, Random random) {
+        Room toConnect = numberToRoom.get(i);
+        Position start = toConnect.openHole(random);
+        wallToRoom.remove(start);
+        openToRoom.put(start, toConnect);
+
+        //Getting a random wall coordinate of a random room.
+        int index = random.nextInt(coveredWallPositions.size());
+        Position target = coveredWallPositions.get(index);
+        Room targetRoom = wallToRoom.get(target);
+        //To ensure connectedness, get the parent room of that room.
+        Room parentRoom = numberToRoom.get(roomsToConnect.find(roomToNumber.get(targetRoom)));
+
+        //Get a random wall coordinate from the parent room.
+        int indexParent = random.nextInt(parentRoom.getWallCoordinates().size());
+        //randomWall could be an open coordinate of the parent room
+        Position randomWall = parentRoom.getWallCoordinates().get(indexParent);
+        //check that it is not an open coordinate of the parent room. If it is an open coordinate, then keep picking until you found a wall coordinate
+        while (openToRoom.containsKey(randomWall)) {
+            indexParent = random.nextInt(parentRoom.getWallCoordinates().size());
+            randomWall = parentRoom.getWallCoordinates().get(indexParent);
+        }
+
+
+        openToRoom.put(randomWall, parentRoom);
+    }*/
 
     private static void checkSurroundingsX(int x, int y, TETile[][] world) {
         if (!Room.overlap(x - 1, y, coveredPositions)) {
