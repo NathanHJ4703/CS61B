@@ -127,6 +127,7 @@ public class OurWorld {
             }
         }
     }
+
 //problem with generating hallways is that it creates additional closed rooms.
     //Use the disjoint set data structure to ensure connectedness
     public static void generateHallways(TETile[][] world, Random random) {

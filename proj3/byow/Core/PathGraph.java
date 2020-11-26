@@ -28,6 +28,6 @@ public class PathGraph implements AStarGraph<Position> {
 
     @Override
     public double estimatedDistanceToGoal(Position s, Position goal) {
-        return 0;
+        return Math.sqrt((s.getX() - goal.getX())*(s.getX() - goal.getX()) + (s.getY() - goal.getY())*(s.getY() - goal.getY()));
     }
 }
