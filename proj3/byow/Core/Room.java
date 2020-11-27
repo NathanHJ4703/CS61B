@@ -16,9 +16,10 @@ public class Room {
     private boolean isBottomOpen;
     private boolean isLeftOpen;
     private List<Position> walls;
+    private int id;
 
 
-    public Room(Position position, int width, int height) {
+    public Room(Position position, int width, int height, int id) {
         bottomLeft = position;
         this.width = width;
         this.height = height;
@@ -29,6 +30,11 @@ public class Room {
         isBottomOpen = getBottomLeft().getY() >= 4;
         isLeftOpen = getBottomLeft().getX() >= 4;
         walls = new LinkedList<>();
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
     }
 
 
@@ -260,14 +266,9 @@ public class Room {
     }
 
     public static void main(String[] args) {
-        Room r = new Room(new Position(7, 23), 5, 7);
-        OurWorld.roomToNumber.put(new Room(new Position(7, 23), 5, 7), 1);
-        System.out.println(OurWorld.roomToNumber.get(new Room(new Position(7, 23), 5, 7)));
-        System.out.println(r.equals(new Room(new Position(7, 23), 5, 7)));
-
-        Map<Position, Integer> x = new HashMap<>();
-        x.put(new Position(3, 4), 1);
-        System.out.println(x.get(new Position(3, 4)));
+        Position a = new Position(3, 4);
+        OurWorld.coveredPositions.add(a);
+        OurWorld.coveredPositions.add(a);
     }
 
 }
