@@ -52,8 +52,6 @@ public class Engine {
         /** */
 
         InputThing newWorld = new InputThing(input);
-        //TERenderer ter = new TERenderer();
-        //ter.initialize(WIDTH, HEIGHT);
 
         // initialize tiles
         TETile[][] finalWorldFrame = new TETile[WIDTH][HEIGHT];
@@ -63,7 +61,7 @@ public class Engine {
             }
         }
 
-        int i = 10000;
+        int i = newWorld.rand.nextInt(100);
         OurWorld.generateRooms(i, newWorld.rand, finalWorldFrame);
         OurWorld.addOpenings(OurWorld.listOfRooms, finalWorldFrame, newWorld.rand);
         OurWorld.generateHallways(finalWorldFrame, newWorld.rand);

@@ -81,10 +81,9 @@ public class Room {
                     break;
                 }
                 if (x == bottomLeft.getX() || x == (rightSide - 1) || y == bottomLeft.getY() || y == (topSide - 1)) {
-                    wallCoordinates.add(new Position(x, y));
-                    tempCovered.add(new Position(x, y));
-                    OurWorld.coveredWallPositions.add(new Position(x, y));
-                    OurWorld.wallToRoom.put(new Position(x, y), this);
+                    Position p = new Position(x, y);
+                    wallCoordinates.add(p);
+                    tempCovered.add(p);
                 }
             }
             if (getOverlap()) {
@@ -95,6 +94,8 @@ public class Room {
         if (!getOverlap()) {
             for (Position p : tempCovered) {
                 OurWorld.coveredPositions.add(p);
+                OurWorld.coveredWallPositions.add(p);
+                OurWorld.wallToRoom.put(p, this);
                 walls.add(p);
             }
         }
@@ -176,6 +177,8 @@ public class Room {
         }*/
         return openCoordinates;
     }
+
+
 
     //Creates a randomly generated hole in a closed room.
     public Position openHole(Random random) {

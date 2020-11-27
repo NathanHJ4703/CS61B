@@ -57,12 +57,12 @@ public class UnionFind {
         }
         int r1 = find(v1);
         int r2 = find(v2);
-        if (parent[r1] >= parent[r2]) {
-            parent[r2] += parent[v1];
-            parent[r1] = r2;
-        } else {
-            parent[r1] += parent[v2];
+        if (sizeOf(v1) >= sizeOf(v2)) {
+            parent[r1] += parent[r2];
             parent[r2] = r1;
+        } else {
+            parent[r2] += parent[r1];
+            parent[r1] = r2;
         }
     }
 

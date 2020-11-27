@@ -74,7 +74,7 @@ public class OurWorld {
 
         addOpenings(listOfRooms, ourWorld, rand);
         generateHallways(ourWorld, rand);
-        //connectRooms(rand, ourWorld);
+        connectRooms(rand, ourWorld);
 
 
         ter.renderFrame(ourWorld);
@@ -130,6 +130,7 @@ public class OurWorld {
                 openCoordinates.add(p);
                 openToRoom.put(p, room);
                 wallToRoom.remove(p);
+                coveredWallPositions.remove(p);
             }
         }
     }
@@ -148,25 +149,55 @@ public class OurWorld {
             Room rSecond = openToRoom.get(second);
 
 
-            //Ensures that each open coordinate is connected by a different room every time a hallway is generated between two open coordinates. Also, different rooms every time.
-            while (rFirst.equals(rSecond) || roomsToConnect.isConnected(rFirst.getId(), rSecond.getId())) {
+           //Ensures that different rooms are connected
+            while (rFirst.equals(rSecond) && i > 4) {
                 index2 = random.nextInt(i);
                 second = initialOpenCoordinates.get(index2);
                 rSecond = openToRoom.get(second);
             }
-            i = i - 2;
-            initialOpenCoordinates.remove(index1);
-            if (index2 > index1) {
-                index2--;
+            boolean allSameRoom = false;
+            if (i <= 4) {
+                int k = 0;
+                for (; k < initialOpenCoordinates.size(); k++) {
+                    if (!rFirst.equals(openToRoom.get(initialOpenCoordinates.get(k)))) {
+                        index2 = k;
+                        second = initialOpenCoordinates.get(k);
+                        break;
+                    }
+                }
+                if (k == initialOpenCoordinates.size()) {
+                    allSameRoom = true;
+                }
+                if (allSameRoom) {
+                    int size = initialOpenCoordinates.size();
+                    //Undoing the action from addOpenings
+                    for (int count = 0; count < size; count++) {
+                        i--;
+                        Position p = initialOpenCoordinates.remove(0);
+                        world[p.getX()][p.getY()] = Tileset.WALL;
+                        openCoordinates.remove(p);
+                        openToRoom.remove(p);
+                        wallToRoom.put(p, rFirst);
+                        coveredWallPositions.add(p);
+                    }
+                }
             }
-            initialOpenCoordinates.remove(index2);
-            // For the world to recognize that these two rooms are connected through a disjoint set.
-            int v1 = openToRoom.get(first).getId();
-            int v2 = openToRoom.get(second).getId();
-            roomsToConnect.connect(v1, v2);
 
-            AStarSolver<Position> pathFinder = new AStarSolver<>(pathway, first, second, 30);
-            generatePaths(pathFinder, world);
+            if (!allSameRoom) {
+                i = i - 2;
+                initialOpenCoordinates.remove(index1);
+                if (index2 > index1) {
+                    index2--;
+                }
+                initialOpenCoordinates.remove(index2);
+                // For the world to recognize that these two rooms are connected through a disjoint set.
+                int v1 = openToRoom.get(first).getId();
+                int v2 = openToRoom.get(second).getId();
+                roomsToConnect.connect(v1, v2);
+
+                AStarSolver<Position> pathFinder = new AStarSolver<>(pathway, first, second, 30);
+                generatePaths(pathFinder, world);
+            }
         }
         if (i == 1) {
             Position k = initialOpenCoordinates.remove(0);
@@ -294,11 +325,12 @@ public class OurWorld {
         for (int i = 0; i < roomsToConnect.parent.length; i++) {
 
 
-            if (roomsToConnect.parent[i] < 0) {
+            if (roomsToConnect.parent[i] < 0 && Math.abs(roomsToConnect.parent(i)) != roomsToConnect.parent.length) {
                 Room toConnect = numberToRoom.get(i);
                 Position start = toConnect.openHole(random);
                 wallToRoom.remove(start);
-                openToRoom.put(start, toConnect);
+                coveredWallPositions.remove(start);
+                //openToRoom.put(start, toConnect);
 
                 //Getting a random wall coordinate of a random room.
                 int index = random.nextInt(coveredWallPositions.size());
@@ -318,10 +350,10 @@ public class OurWorld {
                 }
 
 
-                openToRoom.put(randomWall, parentRoom);
+                //openToRoom.put(randomWall, parentRoom);
                 while (toConnect.equals(parentRoom)) {
 
-                    openToRoom.remove(randomWall);
+                    //openToRoom.remove(randomWall);
 
                     index = random.nextInt(coveredWallPositions.size());
                     target = coveredWallPositions.get(index);
@@ -334,7 +366,7 @@ public class OurWorld {
                         randomWall = parentRoom.getWalls().get(indexParent);
                     }
 
-                    openToRoom.put(randomWall, parentRoom);
+                    //openToRoom.put(randomWall, parentRoom);
                 }
 
                 //Delete the wall coordinate
@@ -355,54 +387,43 @@ public class OurWorld {
         }
     }
 
-    /**
-    //Takes in an object of type random and an integer.
-    private static void getOpenParentCoordinate(int i, Random random) {
-        Room toConnect = numberToRoom.get(i);
-        Position start = toConnect.openHole(random);
-        wallToRoom.remove(start);
-        openToRoom.put(start, toConnect);
-
-        //Getting a random wall coordinate of a random room.
-        int index = random.nextInt(coveredWallPositions.size());
-        Position target = coveredWallPositions.get(index);
-        Room targetRoom = wallToRoom.get(target);
-        //To ensure connectedness, get the parent room of that room.
-        Room parentRoom = numberToRoom.get(roomsToConnect.find(roomToNumber.get(targetRoom)));
-
-        //Get a random wall coordinate from the parent room.
-        int indexParent = random.nextInt(parentRoom.getWallCoordinates().size());
-        //randomWall could be an open coordinate of the parent room
-        Position randomWall = parentRoom.getWallCoordinates().get(indexParent);
-        //check that it is not an open coordinate of the parent room. If it is an open coordinate, then keep picking until you found a wall coordinate
-        while (openToRoom.containsKey(randomWall)) {
-            indexParent = random.nextInt(parentRoom.getWallCoordinates().size());
-            randomWall = parentRoom.getWallCoordinates().get(indexParent);
-        }
-
-
-        openToRoom.put(randomWall, parentRoom);
-    }*/
 
     private static void checkSurroundingsX(int x, int y, TETile[][] world) {
         if (!Room.overlap(x - 1, y, coveredPositions)) {
-            world[x - 1][y] = Tileset.WALL;
-            coveredPositions.add(new Position(x - 1, y));
+            if (x - 1 >= 0) {
+                world[x - 1][y] = Tileset.WALL;
+                coveredPositions.add(new Position(x - 1, y));
+            } else {
+                world[x][y] = Tileset.WALL;
+            }
         }
+
         if (!Room.overlap(x + 1, y, coveredPositions)) {
-            world[x + 1][y] = Tileset.WALL;
-            coveredPositions.add(new Position(x + 1, y));
+            if (x + 1 < getXDimension()) {
+                world[x + 1][y] = Tileset.WALL;
+                coveredPositions.add(new Position(x + 1, y));
+            } else {
+                world[x][y] = Tileset.WALL;
+            }
         }
     }
 
     private static void checkSurroundingsY(int x, int y, TETile[][] world) {
         if (!Room.overlap(x, y + 1, coveredPositions)) {
-            world[x][y + 1] = Tileset.WALL;
-            coveredPositions.add(new Position(x, y + 1));
+            if (y + 1 < getYDimension()) {
+                world[x][y + 1] = Tileset.WALL;
+                coveredPositions.add(new Position(x, y + 1));
+            } else {
+                world[x][y] = Tileset.WALL;
+            }
         }
         if (!Room.overlap(x, y - 1, coveredPositions)) {
-            world[x][y - 1] = Tileset.WALL;
-            coveredPositions.add(new Position(x, y - 1));
+            if (y - 1 >= 0) {
+                world[x][y - 1] = Tileset.WALL;
+                coveredPositions.add(new Position(x, y - 1));
+            } else {
+                world[x][y] = Tileset.WALL;
+            }
         }
     }
 
@@ -410,7 +431,7 @@ public class OurWorld {
         //Top left
         if (!Room.overlap(x - 1, y + 1, coveredPositions)) {
             //Check for out of bounds
-            if (y + 1 < getYDimension()) {
+            if (x - 1 >= 0 && y + 1 < getYDimension()) {
                 world[x - 1][y + 1] = Tileset.WALL;
                 coveredPositions.add(new Position(x - 1, y + 1));
             }
@@ -439,28 +460,40 @@ public class OurWorld {
                 coveredPositions.add(new Position(x + 1, y - 1));
             }
         }
+        //Top
         if (!Room.overlap(x, y + 1, coveredPositions)) {
             if (y + 1 < getYDimension()) {
                 world[x][y + 1] = Tileset.WALL;
                 coveredPositions.add(new Position(x, y + 1));
+            } else {
+                world[x][y] = Tileset.WALL;
             }
         }
+        //Bottom
         if (!Room.overlap(x, y - 1, coveredPositions)) {
             if (y - 1 >= 0) {
                 world[x][y - 1] = Tileset.WALL;
                 coveredPositions.add(new Position(x, y - 1));
+            } else {
+                world[x][y] = Tileset.WALL;
             }
         }
+        //Left
         if (!Room.overlap(x - 1, y, coveredPositions)) {
             if (x - 1 >= 0) {
                 world[x - 1][y] = Tileset.WALL;
                 coveredPositions.add(new Position(x - 1, y));
+            } else {
+                world[x][y] = Tileset.WALL;
             }
         }
+        //Right
         if (!Room.overlap(x + 1, y, coveredPositions)) {
             if (x + 1 < getXDimension()) {
                 world[x + 1][y] = Tileset.WALL;
                 coveredPositions.add(new Position(x + 1, y));
+            } else {
+                world[x][y] = Tileset.WALL;
             }
         }
 
