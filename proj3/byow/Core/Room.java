@@ -1,5 +1,6 @@
 package byow.Core;
 
+import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 
@@ -53,7 +54,7 @@ public class Room {
 
 
     // Returns a list of all the wall coordinates for the room and creates the room in the world. Only used for generating rooms in the world.
-    public List<Position> getWallCoordinates() {
+    public List<Position> getWallCoordinates(PositionTracker pTracker) {
         List<Position> wallCoordinates = new LinkedList<>();
         Set<Position> tempCovered = new HashSet<>();
 
@@ -76,7 +77,7 @@ public class Room {
 
         for (int x = bottomLeft.getX(); x < rightSide; x += 1) {
             for (int y = bottomLeft.getY(); y < topSide; y += 1) {
-                if (overlap(x, y, OurWorld.coveredPositions)) {
+                if (overlap(x, y, pTracker.getCoveredPositions())) {
                     overlap = true;
                     break;
                 }
@@ -93,9 +94,9 @@ public class Room {
         }
         if (!getOverlap()) {
             for (Position p : tempCovered) {
-                OurWorld.coveredPositions.add(p);
-                OurWorld.coveredWallPositions.add(p);
-                OurWorld.wallToRoom.put(p, this);
+                pTracker.addCoveredPositions(p);
+                pTracker.addCoveredWallPositions(p);
+                pTracker.addWallToRoom(p, this);
                 walls.add(p);
             }
         }
@@ -110,7 +111,7 @@ public class Room {
 
 
     // returns a list of all the floor coordinates for the room.
-    public List<Position> getFloorCoordinates() {
+    public List<Position> getFloorCoordinates(PositionTracker pTracker, RoomTracker rTracker) {
         List<Position> floorCoordinates = new LinkedList<>();
         int topSide = bottomLeft.getY() + height;
         while (topSide > OurWorld.getYDimension()) {
@@ -122,14 +123,14 @@ public class Room {
         }
         for (int x = bottomLeft.getX(); x < rightSide; x += 1) {
             for (int y = bottomLeft.getY(); y < topSide; y += 1) {
-                if (overlap(x, y, OurWorld.coveredPositions) && !OurWorld.distinctRooms.contains(this)) {
+                if (overlap(x, y, pTracker.getCoveredPositions()) && !rTracker.getDistinctRooms().contains(this)) {
                     overlap = true;
                     break;
                 }
                 if (x != bottomLeft.getX() && x != (rightSide - 1) && y != bottomLeft.getY() && y != (topSide - 1)) {
                     floorCoordinates.add(new Position(x, y));
                     //OurWorld.coveredFloorPositions.add(new Position(x, y));
-                    OurWorld.coveredPositions.add(new Position(x, y));
+                    pTracker.addCoveredPositions(new Position(x, y));
                 }
             }
             if (overlap) {
@@ -269,10 +270,13 @@ public class Room {
     }
 
     public static void main(String[] args) {
-        Position a = new Position(3, 4);
-        LinkedList<Position> x = new LinkedList<>();
-        Position b = x.remove();
-        System.out.println(b);
+        TERenderer ter = new TERenderer();
+        ter.initialize(Engine.WIDTH, Engine.HEIGHT);
+        Engine x = new Engine();
+        TETile[][] finalWorldFrame = x.interactWithInputString("n5197880843569031643s");
+        TETile[][] finalWorldFrame2 = x.interactWithInputString("n5197880843569031643s");
+        ter.renderFrame(finalWorldFrame);
+        ter.renderFrame(finalWorldFrame2);
     }
 
 }

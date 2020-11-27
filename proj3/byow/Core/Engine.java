@@ -61,17 +61,22 @@ public class Engine {
             }
         }
 
+        RoomTracker rTracker = new RoomTracker();
+        PositionTracker pTracker = new PositionTracker();
+        OpenCoordTracker oTracker = new OpenCoordTracker();
+
         int i = newWorld.rand.nextInt(100);
 
-        OurWorld.generateRooms(i + 10, newWorld.rand, finalWorldFrame);
-        int k = OurWorld.isolatedRooms.size();
-        OurWorld.roomsToConnect = new UnionFind(k);
+        OurWorld.generateRooms(i + 10, newWorld.rand, finalWorldFrame, rTracker, pTracker);
+        int k = rTracker.getIsolatedRooms().size();
+        rTracker.constructUnionFind(k);
 
-        OurWorld.addOpenings(OurWorld.listOfRooms, finalWorldFrame, newWorld.rand);
-        OurWorld.generateHallways(finalWorldFrame, newWorld.rand);
-        OurWorld.connectRooms(newWorld.rand, finalWorldFrame);
+        OurWorld.addOpenings(rTracker.getListOfRooms(), finalWorldFrame, newWorld.rand, oTracker, pTracker);
+        OurWorld.generateHallways(finalWorldFrame, newWorld.rand, oTracker, pTracker, rTracker);
+        OurWorld.connectRooms(newWorld.rand, finalWorldFrame, rTracker, pTracker, oTracker);
 
 
         return finalWorldFrame;
     }
+
 }
