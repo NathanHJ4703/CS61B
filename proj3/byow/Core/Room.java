@@ -270,8 +270,9 @@ public class Room {
 
     public static void main(String[] args) {
         Position a = new Position(3, 4);
-        OurWorld.coveredPositions.add(a);
-        OurWorld.coveredPositions.add(a);
+        LinkedList<Position> x = new LinkedList<>();
+        Position b = x.remove();
+        System.out.println(b);
     }
 
 }

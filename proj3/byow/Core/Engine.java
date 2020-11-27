@@ -63,7 +63,7 @@ public class Engine {
 
         int i = newWorld.rand.nextInt(100);
 
-        OurWorld.generateRooms(i, newWorld.rand, finalWorldFrame);
+        OurWorld.generateRooms(i + 10, newWorld.rand, finalWorldFrame);
         int k = OurWorld.isolatedRooms.size();
         OurWorld.roomsToConnect = new UnionFind(k);
 

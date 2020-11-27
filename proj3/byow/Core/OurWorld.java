@@ -95,14 +95,6 @@ public class OurWorld {
             }
             numberToRoom.put(i, r);
             i++;
-            /**
-            Room sr = new Room(new Position(rand.nextInt(largestX+1), rand.nextInt(largestY+1)),
-                    rand.nextInt(maxSWidth+1) + 4, rand.nextInt(maxSHeight+1) + 4, rand);
-            addRoom(sr, world);
-            Room tr = new Room(new Position(rand.nextInt(largestX+1), rand.nextInt(largestY+1)),
-                    rand.nextInt(maxTWidth+1) + 4, rand.nextInt(maxTHeight+1) + 4, rand);
-            addRoom(tr, world);
-             */
             numTrials--;
         }
     }
@@ -138,7 +130,7 @@ public class OurWorld {
 //problem with generating hallways is that it creates additional closed rooms.
     //Use the disjoint set data structure to ensure connectedness
     public static void generateHallways(TETile[][] world, Random random) {
-        int i = openCoordinates.size();
+        int i = initialOpenCoordinates.size();
         while (i > 1) {
             AStarGraph<Position> pathway = new PathGraph();
             int index1 = random.nextInt(i);
