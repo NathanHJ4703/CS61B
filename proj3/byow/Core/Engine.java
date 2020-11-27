@@ -62,7 +62,11 @@ public class Engine {
         }
 
         int i = newWorld.rand.nextInt(100);
+
         OurWorld.generateRooms(i, newWorld.rand, finalWorldFrame);
+        int k = OurWorld.isolatedRooms.size();
+        OurWorld.roomsToConnect = new UnionFind(k);
+
         OurWorld.addOpenings(OurWorld.listOfRooms, finalWorldFrame, newWorld.rand);
         OurWorld.generateHallways(finalWorldFrame, newWorld.rand);
         OurWorld.connectRooms(newWorld.rand, finalWorldFrame);
