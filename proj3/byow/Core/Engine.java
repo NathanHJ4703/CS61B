@@ -10,12 +10,17 @@ import byow.TileEngine.Tileset;
  */
 public class Engine {
     /** A renderer object for drawing the rooms and hallways. */
-    public TERenderer ter = new TERenderer();
+    private TERenderer ter = new TERenderer();
     /** Feel free to change the width and height. */
     public static final int WIDTH = 60;
     /** The height of the window. */
     public static final int HEIGHT = 30;
 
+    /** Gets the TERenderer.
+     * @return The TERenderer */
+    public TERenderer getTer() {
+        return ter;
+    }
 
     /**
      * Method used for exploring a fresh world. This method should handle all
