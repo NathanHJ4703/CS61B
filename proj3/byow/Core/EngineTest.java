@@ -13,7 +13,8 @@ public class EngineTest {
         TERenderer ter = new TERenderer();
         ter.initialize(Engine.WIDTH, Engine.HEIGHT);
         Engine x = new Engine();
-        TETile[][] finalWorldFrame = x.interactWithInputString("n5197880843569031643s");
+        TETile[][] finalWorldFrame =
+                x.interactWithInputString("n5197880843569031643s");
         ter.renderFrame(finalWorldFrame);
     }
 }

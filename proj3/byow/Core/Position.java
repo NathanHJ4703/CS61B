@@ -1,6 +1,6 @@
 package byow.Core;
 
-import byow.TileEngine.TETile;
+
 
 import java.util.Objects;
 
@@ -12,7 +12,7 @@ public class Position {
         this.x = x;
         this.y = y;
     }
-    public int getX(){
+    public int getX() {
         return this.x;
     }
     public int getY() {
@@ -21,11 +21,15 @@ public class Position {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Position)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Position)) {
+            return false;
+        }
         Position position = (Position) o;
-        return getX() == position.getX() &&
-                getY() == position.getY();
+        return getX() == position.getX()
+                && getY() == position.getY();
     }
 
     @Override

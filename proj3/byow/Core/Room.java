@@ -1,9 +1,5 @@
 package byow.Core;
 
-import byow.TileEngine.TERenderer;
-import byow.TileEngine.TETile;
-import byow.TileEngine.Tileset;
-
 import java.util.*;
 
 public class Room {
@@ -53,7 +49,6 @@ public class Room {
     }
 
 
-    // Returns a list of all the wall coordinates for the room and creates the room in the world. Only used for generating rooms in the world.
     public List<Position> getWallCoordinates(PositionTracker pTracker) {
         List<Position> wallCoordinates = new LinkedList<>();
         Set<Position> tempCovered = new HashSet<>();
@@ -81,7 +76,8 @@ public class Room {
                     overlap = true;
                     break;
                 }
-                if (x == bottomLeft.getX() || x == (rightSide - 1) || y == bottomLeft.getY() || y == (topSide - 1)) {
+                if (x == bottomLeft.getX() || x == (rightSide - 1)
+                        || y == bottomLeft.getY() || y == (topSide - 1)) {
                     Position p = new Position(x, y);
                     wallCoordinates.add(p);
                     tempCovered.add(p);
@@ -123,11 +119,13 @@ public class Room {
         }
         for (int x = bottomLeft.getX(); x < rightSide; x += 1) {
             for (int y = bottomLeft.getY(); y < topSide; y += 1) {
-                if (overlap(x, y, pTracker.getCoveredPositions()) && !rTracker.getDistinctRooms().contains(this)) {
+                if (overlap(x, y, pTracker.getCoveredPositions())
+                        && !rTracker.getDistinctRooms().contains(this)) {
                     overlap = true;
                     break;
                 }
-                if (x != bottomLeft.getX() && x != (rightSide - 1) && y != bottomLeft.getY() && y != (topSide - 1)) {
+                if (x != bottomLeft.getX() && x != (rightSide - 1)
+                        && y != bottomLeft.getY() && y != (topSide - 1)) {
                     floorCoordinates.add(new Position(x, y));
                     //OurWorld.coveredFloorPositions.add(new Position(x, y));
                     pTracker.addCoveredPositions(new Position(x, y));
@@ -188,7 +186,7 @@ public class Room {
             int yPos = getBottomLeft().getY();
             return new Position(xPos, yPos);
         } else if (isTopOpen) {
-            int xPos = getBottomLeft().getX() + random.nextInt(getWidth()-2) + 1;
+            int xPos = getBottomLeft().getX() + random.nextInt(getWidth() - 2) + 1;
             int yPos = getBottomLeft().getY() + getHeight() - 1;
             return new Position(xPos, yPos);
         } else if (isLeftOpen) {
@@ -218,7 +216,7 @@ public class Room {
         if (x == 0) {
             return;
         }
-        int xPos = getBottomLeft().getX() + random.nextInt(getWidth()-2) + 1;
+        int xPos = getBottomLeft().getX() + random.nextInt(getWidth() - 2) + 1;
         int yPos = getBottomLeft().getY() + getHeight() - 1;
         openCoordinates.add(new Position(xPos, yPos));
     }
@@ -251,32 +249,38 @@ public class Room {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Room)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Room)) {
+            return false;
+        }
         Room room = (Room) o;
-        return getWidth() == room.getWidth() &&
-                getHeight() == room.getHeight() &&
-                getOverlap() == room.getOverlap() &&
-                isTopOpen == room.isTopOpen &&
-                isRightOpen == room.isRightOpen &&
-                isBottomOpen == room.isBottomOpen &&
-                isLeftOpen == room.isLeftOpen &&
-                Objects.equals(getBottomLeft(), room.getBottomLeft());
+        return getWidth() == room.getWidth()
+                && getHeight() == room.getHeight()
+                && getOverlap() == room.getOverlap()
+                && isTopOpen == room.isTopOpen
+                && isRightOpen == room.isRightOpen
+                && isBottomOpen == room.isBottomOpen
+                && isLeftOpen == room.isLeftOpen
+                && Objects.equals(getBottomLeft(), room.getBottomLeft());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getBottomLeft(), getWidth(), getHeight(), getOverlap(), isTopOpen, isRightOpen, isBottomOpen, isLeftOpen);
+        return Objects.hash(getBottomLeft(), getWidth(), getHeight(),
+                getOverlap(), isTopOpen, isRightOpen, isBottomOpen, isLeftOpen);
     }
 
     public static void main(String[] args) {
+        /**
         TERenderer ter = new TERenderer();
         ter.initialize(Engine.WIDTH, Engine.HEIGHT);
         Engine x = new Engine();
         TETile[][] finalWorldFrame = x.interactWithInputString("n5197880843569031643s");
         TETile[][] finalWorldFrame2 = x.interactWithInputString("n5197880843569031643s");
         ter.renderFrame(finalWorldFrame);
-        ter.renderFrame(finalWorldFrame2);
+        ter.renderFrame(finalWorldFrame2);*/
     }
 
 }

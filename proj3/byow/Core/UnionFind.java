@@ -3,7 +3,7 @@ package byow.Core;
 import java.util.ArrayList;
 
 public class UnionFind {
-    public int[] parent;
+    private int[] parent;
 
     /* Creates a UnionFind data structure holding n vertices. Initially, all
        vertices are in disjoint sets. */
@@ -13,6 +13,10 @@ public class UnionFind {
         for (int i = 0; i < n; i++) {
             parent[i] = -1;
         }
+    }
+
+    public int[] getParent() {
+        return parent;
     }
 
     /* Throws an exception if v1 is not a valid vertex. */

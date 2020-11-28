@@ -1,12 +1,13 @@
 package byow.Core;
 
-import byow.TileEngine.TETile;
-
 /** This is the main entry point for the program. This class simply parses
  *  the command line inputs, and lets the byow.Core.Engine class take over
  *  in either keyboard or input string mode.
+ * @author nathanpak
  */
 public class Main {
+    /** Takes a seed as a string argument and runs depending on the input.
+     * @param args The seed string */
     public static void main(String[] args) {
         if (args.length > 1) {
             System.out.println("Can only have one argument - the input string");
