@@ -4,12 +4,13 @@ import java.util.*;
 
 public class PositionTracker {
     private List<Position> coveredWallPositions;
-    private  Set<Position> coveredPositions;
+    private  List<Position> coveredPositions;
     private Map<Position, Room> wallToRoom;
+    private Position avatar;
 
     public PositionTracker() {
         coveredWallPositions = new LinkedList<>();
-        coveredPositions = new HashSet<>();
+        coveredPositions = new LinkedList<>();
         wallToRoom = new HashMap<>();
     }
 
@@ -29,7 +30,7 @@ public class PositionTracker {
         coveredPositions.add(p);
     }
 
-    public Set<Position> getCoveredPositions() {
+    public List<Position> getCoveredPositions() {
         return coveredPositions;
     }
 

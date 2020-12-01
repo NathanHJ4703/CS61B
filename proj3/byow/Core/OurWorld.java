@@ -92,6 +92,7 @@ public class OurWorld {
                 rTracker);
         connectRooms(rand, ourWorld, rTracker, pTracker,
                 oTracker);
+        Avatar avatar = new Avatar(OurWorld.addAvatar(ourWorld, pTracker, rand));
 
 
         ter.renderFrame(ourWorld);
@@ -493,7 +494,7 @@ public class OurWorld {
      */
     private static void checkSurroundingsX(int x, int y, TETile[][] world,
                                            PositionTracker positionTracker) {
-        Set<Position> coveredPositions = positionTracker.getCoveredPositions();
+        List<Position> coveredPositions = positionTracker.getCoveredPositions();
         if (!Room.overlap(x - 1, y, coveredPositions)) {
             if (x - 1 >= 0) {
                 world[x - 1][y] = Tileset.WALL;
@@ -522,7 +523,7 @@ public class OurWorld {
      */
     private static void checkSurroundingsY(int x, int y, TETile[][] world,
                                            PositionTracker positionTracker) {
-        Set<Position> coveredPositions = positionTracker.getCoveredPositions();
+        List<Position> coveredPositions = positionTracker.getCoveredPositions();
         if (!Room.overlap(x, y + 1, coveredPositions)) {
             if (y + 1 < getYDimension()) {
                 world[x][y + 1] = Tileset.WALL;
@@ -552,7 +553,7 @@ public class OurWorld {
      */
     private static void checkSurroundings(int x, int y, TETile[][] world,
                                           PositionTracker positionTracker) {
-        Set<Position> coveredPositions = positionTracker.getCoveredPositions();
+        List<Position> coveredPositions = positionTracker.getCoveredPositions();
 
         if (!Room.overlap(x - 1, y + 1, coveredPositions)) {
 
@@ -622,6 +623,17 @@ public class OurWorld {
             }
         }
 
+    }
+
+    public static Position addAvatar(TETile[][] world, PositionTracker positionTracker, Random random) {
+        int randIndex = random.nextInt(positionTracker.getCoveredPositions().size());
+        Position p = positionTracker.getCoveredPositions().get(randIndex);
+        while (world[p.getX()][p.getY()] == Tileset.WALL) {
+            randIndex = random.nextInt(positionTracker.getCoveredPositions().size());
+            p = positionTracker.getCoveredPositions().get(randIndex);
+        }
+        world[p.getX()][p.getY()] = Tileset.AVATAR;
+        return new Position(p.getX(), p.getY());
     }
 }
 

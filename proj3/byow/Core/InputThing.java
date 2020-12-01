@@ -13,12 +13,14 @@ public class InputThing {
     String seedString;
     Random rand;
     long seed;
+    ArrayList<Character> commands;
 
     public InputThing(String inputSeed) {
         stringInput = new StringInputDevice(inputSeed);
         Character startChar = stringInput.getNextKey();
         startedAtN = startChar.equals('n') || startChar.equals('N');
         characters = new ArrayList<>();
+        commands = new ArrayList<>();
         seedString = "";
         if (startedAtN) {
             convertInputToSeed();
@@ -29,6 +31,10 @@ public class InputThing {
         while (stringInput.possibleNextInput()) {
             Character seedDigit = stringInput.getNextKey();
             if (seedDigit.equals('S') || seedDigit.equals('s')) {
+                while (stringInput.possibleNextInput()) {
+                    seedDigit = stringInput.getNextKey();
+                    commands.add(seedDigit);
+                }
                 break;
             }
             characters.add(seedDigit);

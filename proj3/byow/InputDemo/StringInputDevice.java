@@ -1,5 +1,9 @@
 package byow.InputDemo;
 
+import byow.Core.Game;
+import byow.TileEngine.TERenderer;
+import byow.TileEngine.TETile;
+
 /**
  * Created by hug.
  */
@@ -21,4 +25,11 @@ public class StringInputDevice implements InputSource  {
     public boolean possibleNextInput() {
         return index < input.length();
     }
+
+    @Override
+    public char getKeyWait(Game game, TETile[][] world, TERenderer ter) {
+        return 0;
+    }
+
+
 }

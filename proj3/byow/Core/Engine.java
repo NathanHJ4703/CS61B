@@ -43,31 +43,65 @@ public class Engine {
         StdDraw.text(0.5, 0.2, "Quit (Press Q)");
 
 
-        InputSource inputSource;
+        KeyboardInteract inputSource;
         inputSource = new KeyboardInteract();
-        Game game = new Game(inputSource, ter);
+        Game game = new Game(inputSource);
 
-        //while (inputSource.possibleNextInput()) {
+        while (inputSource.possibleNextInput()) {
 
-        char c = inputSource.getNextKey();
+            char c = inputSource.getNextKey();
 
-        if (c == 'N') {
-            String seed = game.generateNewWorld();
-            TETile[][] worldGenerated = interactWithInputString(seed);
-            ter.initialize(WIDTH, HEIGHT, 10, 5);
-            ter.renderFrame(worldGenerated);
-            game.interactHUD(worldGenerated);
-        }
-/**
-            if (c == 'L') {
+            if (c == 'N') {
+                String seed = game.generateNewWorld(game, null, ter);
+                TETile[][] worldGenerated = interactWithInputString(seed);
+                ter.initialize(WIDTH, HEIGHT, 10, 5);
+                ter.renderFrame(worldGenerated);
+                while (true) {
+                    game.displayHUD(worldGenerated);
+                    char m = inputSource.getNextKey();
+                    if (m == 'W') {
+                        seed += "w";
+                        worldGenerated = interactWithInputString(seed);
+                    }
+                    if (m == 'A') {
+                        seed += "a";
+                        worldGenerated = interactWithInputString(seed);
+                    }
+                    if (m == 'S') {
+                        seed += "s";
+                        worldGenerated = interactWithInputString(seed);
+                    }
+                    if (m == 'D') {
+                        seed += "d";
+                        worldGenerated = interactWithInputString(seed);
+                    }
+                    if (m == ':') {
+                        char q = inputSource.getKeyWait(game, worldGenerated, ter);
+                        if (q == 'Q') {
+                            seed += ":q";
+                            worldGenerated = interactWithInputString(seed);
+                        }
+                    }
+                    ter.renderFrame(worldGenerated);
 
+
+                    if (m == 'Q') {
+                        game.pressedQ();
+                        break;
+                    }
+                }
             }
-*//**
-        if (c == 'Q'|| game.isPressedQ()) {
-            break;
-        }*/
+        /**
+                if (c == 'L') {
 
-        //}
+                }
+        */
+            if (c == 'Q'|| game.isPressedQ()) {
+                System.out.println("Quit worked");
+                break;
+            }
+
+        }
 
     }
 
@@ -131,7 +165,36 @@ public class Engine {
                 oTracker, pTracker, rTracker);
         OurWorld.connectRooms(newWorld.rand, finalWorldFrame,
                 rTracker, pTracker, oTracker);
+        Avatar avatar = new Avatar(OurWorld.addAvatar(finalWorldFrame, pTracker, newWorld.rand));
 
+        while (newWorld.commands.size() > 0) {
+            Character key = newWorld.commands.remove(0);
+            if (key.equals('w')) {
+                if (finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY() + 1] == Tileset.FLOOR) {
+                    finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY()] = Tileset.FLOOR;
+                    avatar.updatePosition(avatar.getPosition().getX(), avatar.getPosition().getY() + 1);
+                    finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY()] = Tileset.AVATAR;
+                }
+            } else if (key.equals('a')) {
+                if (finalWorldFrame[avatar.getPosition().getX() - 1][avatar.getPosition().getY()] == Tileset.FLOOR) {
+                    finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY()] = Tileset.FLOOR;
+                    avatar.updatePosition(avatar.getPosition().getX() - 1, avatar.getPosition().getY());
+                    finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY()] = Tileset.AVATAR;
+                }
+            } else if (key.equals('s')) {
+                if (finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY() - 1] == Tileset.FLOOR) {
+                    finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY()] = Tileset.FLOOR;
+                    avatar.updatePosition(avatar.getPosition().getX(), avatar.getPosition().getY() - 1);
+                    finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY()] = Tileset.AVATAR;
+                }
+            } else if (key.equals('d')) {
+                if (finalWorldFrame[avatar.getPosition().getX() + 1][avatar.getPosition().getY()] == Tileset.FLOOR) {
+                    finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY()] = Tileset.FLOOR;
+                    avatar.updatePosition(avatar.getPosition().getX() + 1, avatar.getPosition().getY());
+                    finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY()] = Tileset.AVATAR;
+                }
+            }
+        }
 
         return finalWorldFrame;
     }

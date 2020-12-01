@@ -1,6 +1,12 @@
 package byow.Core;
 
+import byow.TileEngine.TERenderer;
+import byow.TileEngine.TETile;
+import edu.princeton.cs.introcs.StdDraw;
+
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 public class Room {
     private Position bottomLeft;
@@ -140,7 +146,7 @@ public class Room {
         return floorCoordinates;
     }
 
-    public static boolean overlap(int x, int y, Set<Position> positions) {
+    public static boolean overlap(int x, int y, List<Position> positions) {
         for (Position p : positions) {
             if (p.getX() == x && p.getY() == y) {
                 return true;
@@ -273,14 +279,26 @@ public class Room {
     }
 
     public static void main(String[] args) {
-        /**
+        Engine e = new Engine();
+        int WIDTH = 70;
+        int HEIGHT = 40;
+        int TILE_SIZE = 16;
+        StdDraw.setCanvasSize(WIDTH*TILE_SIZE, HEIGHT*TILE_SIZE);
+        StdDraw.text(0.1,0.2, "Hello World");
+        StdDraw.clear(Color.BLACK);
+        StdDraw.setPenColor(Color.WHITE);
+        StdDraw.text(0.1, 0.2, "Hello World");
         TERenderer ter = new TERenderer();
-        ter.initialize(Engine.WIDTH, Engine.HEIGHT);
-        Engine x = new Engine();
-        TETile[][] finalWorldFrame = x.interactWithInputString("n5197880843569031643s");
-        TETile[][] finalWorldFrame2 = x.interactWithInputString("n5197880843569031643s");
-        ter.renderFrame(finalWorldFrame);
-        ter.renderFrame(finalWorldFrame2);*/
+        ter.initialize(WIDTH, HEIGHT, 10, 5);
+        StdDraw.setPenColor(Color.WHITE);
+        Font hud = new Font("Arial", Font.PLAIN, 16);
+        StdDraw.setFont(hud);
+        TETile[][] worldGenerated = e.interactWithInputString("n6960S");
+
+        ter.renderFrame(worldGenerated);
+        StdDraw.setPenColor(Color.WHITE);
+        StdDraw.text(35, 35, "Hello World");
+        StdDraw.show();
     }
 
 }

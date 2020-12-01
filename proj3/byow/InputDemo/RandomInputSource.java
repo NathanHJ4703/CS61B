@@ -1,5 +1,8 @@
 package byow.InputDemo;
 
+import byow.Core.Game;
+import byow.TileEngine.TERenderer;
+import byow.TileEngine.TETile;
 import edu.princeton.cs.introcs.StdDraw;
 
 import java.util.Random;
@@ -22,4 +25,10 @@ public class RandomInputSource implements InputSource {
     public boolean possibleNextInput() {
         return true;
     }
+
+    @Override
+    public char getKeyWait(Game game, TETile[][] world, TERenderer ter) {
+        return 0;
+    }
+
 }

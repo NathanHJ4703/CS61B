@@ -3,6 +3,9 @@ package byow.InputDemo;
 /**
  * Created by hug.
  */
+import byow.Core.Game;
+import byow.TileEngine.TERenderer;
+import byow.TileEngine.TETile;
 import edu.princeton.cs.introcs.StdDraw;
 
 public class KeyboardInputSource implements InputSource {
@@ -23,7 +26,13 @@ public class KeyboardInputSource implements InputSource {
         }
     }
 
+
     public boolean possibleNextInput() {
         return true;
+    }
+
+    @Override
+    public char getKeyWait(Game game, TETile[][] world, TERenderer ter) {
+        return 0;
     }
 }
