@@ -12,9 +12,9 @@ import java.util.*;
  */
 public class OurWorld {
     /** Maximum width for our world. */
-    private static final int WIDTH = 60;
+    private static final int WIDTH = 50;
     /** Maximum height for our world. */
-    private static final int HEIGHT = 30;
+    private static final int HEIGHT = 25;
     /** Maximum width for room. */
     private static final int MAXWIDTH = WIDTH / 2;
     /** Maximum height for room. */
