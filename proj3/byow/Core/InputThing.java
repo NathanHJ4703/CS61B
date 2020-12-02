@@ -14,16 +14,23 @@ public class InputThing {
     Random rand;
     long seed;
     ArrayList<Character> commands;
+    boolean startedAtL;
+    ArrayList<Character> commandsAtL;
 
     public InputThing(String inputSeed) {
         stringInput = new StringInputDevice(inputSeed);
         Character startChar = stringInput.getNextKey();
         startedAtN = startChar.equals('n') || startChar.equals('N');
+        startedAtL = startChar.equals('l') || startChar.equals('L');
         characters = new ArrayList<>();
         commands = new ArrayList<>();
+        commandsAtL = new ArrayList<>();
         seedString = "";
         if (startedAtN) {
             convertInputToSeed();
+        }
+        if (startedAtL) {
+
         }
     }
 

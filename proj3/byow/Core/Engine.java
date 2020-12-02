@@ -11,6 +11,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 
 /** Runs the two methods interactWithKeyBoard and interactWithInputString.
@@ -24,7 +26,22 @@ public class Engine {
     public static final int WIDTH = 70;
     /** The height of the window. */
     public static final int HEIGHT = 40;
+    private File worldFolder;
+    private String loaded;
+    private boolean didLoad;
 
+    public Engine() {
+        this.worldFolder = new File("byow/Core/savedWorlds");
+        if (!this.worldFolder.exists()) {
+            this.worldFolder.mkdir();
+        }
+        loaded = "";
+        didLoad = false;
+    }
+
+    public File getWorldFolder() {
+        return worldFolder;
+    }
 
     /** Gets the TERenderer.
      * @return The TERenderer */
@@ -51,65 +68,50 @@ public class Engine {
         KeyboardInteract inputSource;
         inputSource = new KeyboardInteract();
         Game game = new Game(inputSource);
+        TETile[][] worldGenerated;
 
         while (inputSource.possibleNextInput()) {
-
             char c = inputSource.getNextKey();
 
             if (c == 'N') {
                 String seed = game.generateNewWorld(game, null, ter);
-                TETile[][] worldGenerated = interactWithInputString(seed);
+                worldGenerated = interactWithInputString(seed);
                 ter.initialize(WIDTH, HEIGHT, 10, 5);
                 ter.renderFrame(worldGenerated);
-                while (true) {
-                    game.displayHUD(worldGenerated);
-                    char m = inputSource.getNextKey();
-                    if (m == 'W') {
-                        seed += "w";
-                        worldGenerated = interactWithInputString(seed);
-                    }
-                    if (m == 'A') {
-                        seed += "a";
-                        worldGenerated = interactWithInputString(seed);
-                    }
-                    if (m == 'S') {
-                        seed += "s";
-                        worldGenerated = interactWithInputString(seed);
-                    }
-                    if (m == 'D') {
-                        seed += "d";
-                        worldGenerated = interactWithInputString(seed);
-                    }
-                    if (m == ':') {
-                        char q = inputSource.getKeyWait(game, worldGenerated, ter);
-                        if (q == 'Q') {
-                            seed += ":q";
-                            worldGenerated = interactWithInputString(seed);
-                        }
-                    }
-                    ter.renderFrame(worldGenerated);
-
-
-                    if (m == 'Q') {
-                        game.pressedQ();
-                        break;
-                    }
-                }
+                game.interact(worldGenerated, ter, seed, this);
             }
-        /**
-                if (c == 'L') {
 
+            if (c == 'L') {
+                String loaded = loadWorld();
+                if (loaded == null) {
+                    break;
                 }
-        */
+                this.loaded = beforeQ(loaded);
+                worldGenerated = interactWithInputString(this.loaded);
+                ter.initialize(WIDTH, HEIGHT, 10, 5);
+                ter.renderFrame(worldGenerated);
+                game.interact(worldGenerated, ter, "l", this);
+            }
+
             if (c == 'Q'|| game.isPressedQ()) {
                 System.out.println("Quit worked");
                 break;
             }
 
         }
-
     }
 
+    public String beforeQ(String seed) {
+        String newString = "";
+        ArrayList<String> x = new ArrayList<>(Arrays.asList(seed.split("")));
+        for (int i = 0; i < x.size(); i++) {
+            if (x.get(i).equals(":") || x.get(i).equals("q")) {
+                break;
+            }
+            newString += x.get(i);
+        }
+        return newString;
+    }
 
 
     /**
@@ -142,9 +144,19 @@ public class Engine {
      * of the world
      */
     public TETile[][] interactWithInputString(String input) {
-
-        InputThing newWorld = new InputThing(input);
-
+        String seed = input;
+        String lSeed = input;
+        if (input.charAt(0) == 'l') {
+            //everything before :q
+            seed = this.loaded;
+            didLoad = true;
+        }
+        InputThing newWorld = new InputThing(seed);
+        if (didLoad) {
+            for (int i = 1; i < lSeed.length(); i++) {
+                newWorld.commandsAtL.add(lSeed.charAt(i));
+            }
+        }
 
         TETile[][] finalWorldFrame = new TETile[50][25];
         for (int x = 0; x < 50; x += 1) {
@@ -171,59 +183,116 @@ public class Engine {
         OurWorld.connectRooms(newWorld.rand, finalWorldFrame,
                 rTracker, pTracker, oTracker);
         Avatar avatar = new Avatar(OurWorld.addAvatar(finalWorldFrame, pTracker, newWorld.rand));
-
-        while (newWorld.commands.size() > 0) {
-            Character key = newWorld.commands.remove(0);
-            if (key.equals('w')) {
-                if (finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY() + 1] == Tileset.FLOOR) {
-                    finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY()] = Tileset.FLOOR;
-                    avatar.updatePosition(avatar.getPosition().getX(), avatar.getPosition().getY() + 1);
-                    finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY()] = Tileset.AVATAR;
-                }
-            } else if (key.equals('a')) {
-                if (finalWorldFrame[avatar.getPosition().getX() - 1][avatar.getPosition().getY()] == Tileset.FLOOR) {
-                    finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY()] = Tileset.FLOOR;
-                    avatar.updatePosition(avatar.getPosition().getX() - 1, avatar.getPosition().getY());
-                    finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY()] = Tileset.AVATAR;
-                }
-            } else if (key.equals('s')) {
-                if (finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY() - 1] == Tileset.FLOOR) {
-                    finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY()] = Tileset.FLOOR;
-                    avatar.updatePosition(avatar.getPosition().getX(), avatar.getPosition().getY() - 1);
-                    finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY()] = Tileset.AVATAR;
-                }
-            } else if (key.equals('d')) {
-                if (finalWorldFrame[avatar.getPosition().getX() + 1][avatar.getPosition().getY()] == Tileset.FLOOR) {
-                    finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY()] = Tileset.FLOOR;
-                    avatar.updatePosition(avatar.getPosition().getX() + 1, avatar.getPosition().getY());
-                    finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY()] = Tileset.AVATAR;
-                }
-            } else if (key.equals(':')) {
-                Character q = newWorld.commands.remove(0);
-                if (q.equals('q')) {
+        boolean isKeyQ = false;
 
 
+        if (didLoad) {
+            while (newWorld.commandsAtL.size() > 0) {
+                Character key = newWorld.commandsAtL.remove(0);
+                if (key.equals('w')) {
+                    if (finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY() + 1] == Tileset.FLOOR) {
+                        finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY()] = Tileset.FLOOR;
+                        avatar.updatePosition(avatar.getPosition().getX(), avatar.getPosition().getY() + 1);
+                        finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY()] = Tileset.AVATAR;
+                    }
+                    seed += Character.toString('w');
+                } else if (key.equals('a')) {
+                    if (finalWorldFrame[avatar.getPosition().getX() - 1][avatar.getPosition().getY()] == Tileset.FLOOR) {
+                        finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY()] = Tileset.FLOOR;
+                        avatar.updatePosition(avatar.getPosition().getX() - 1, avatar.getPosition().getY());
+                        finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY()] = Tileset.AVATAR;
+                    }
+                    seed += Character.toString('a');
+                } else if (key.equals('s')) {
+                    if (finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY() - 1] == Tileset.FLOOR) {
+                        finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY()] = Tileset.FLOOR;
+                        avatar.updatePosition(avatar.getPosition().getX(), avatar.getPosition().getY() - 1);
+                        finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY()] = Tileset.AVATAR;
+                    }
+                    seed += Character.toString('s');
+                } else if (key.equals('d')) {
+                    if (finalWorldFrame[avatar.getPosition().getX() + 1][avatar.getPosition().getY()] == Tileset.FLOOR) {
+                        finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY()] = Tileset.FLOOR;
+                        avatar.updatePosition(avatar.getPosition().getX() + 1, avatar.getPosition().getY());
+                        finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY()] = Tileset.AVATAR;
+                    }
+                    seed += Character.toString('d');
+                } else if (key.equals(':')) {
+                    Character q = newWorld.commandsAtL.remove(0);
+                    if (q.equals('q')) {
+                        seed += Character.toString(':');
+                        seed += Character.toString('q');
+                        saveWorld(seed);
+                        isKeyQ = true;
+                        break;
+                    }
+                }
+            }
+        } else {
+            while (newWorld.commands.size() > 0) {
+                Character key = newWorld.commands.remove(0);
+                if (key.equals('w')) {
+                    if (finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY() + 1] == Tileset.FLOOR) {
+                        finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY()] = Tileset.FLOOR;
+                        avatar.updatePosition(avatar.getPosition().getX(), avatar.getPosition().getY() + 1);
+                        finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY()] = Tileset.AVATAR;
+                    }
+                    seed += Character.toString('w');
+                } else if (key.equals('a')) {
+                    if (finalWorldFrame[avatar.getPosition().getX() - 1][avatar.getPosition().getY()] == Tileset.FLOOR) {
+                        finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY()] = Tileset.FLOOR;
+                        avatar.updatePosition(avatar.getPosition().getX() - 1, avatar.getPosition().getY());
+                        finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY()] = Tileset.AVATAR;
+                    }
+                    seed += Character.toString('a');
+                } else if (key.equals('s')) {
+                    if (finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY() - 1] == Tileset.FLOOR) {
+                        finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY()] = Tileset.FLOOR;
+                        avatar.updatePosition(avatar.getPosition().getX(), avatar.getPosition().getY() - 1);
+                        finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY()] = Tileset.AVATAR;
+                    }
+                    seed += Character.toString('s');
+                } else if (key.equals('d')) {
+                    if (finalWorldFrame[avatar.getPosition().getX() + 1][avatar.getPosition().getY()] == Tileset.FLOOR) {
+                        finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY()] = Tileset.FLOOR;
+                        avatar.updatePosition(avatar.getPosition().getX() + 1, avatar.getPosition().getY());
+                        finalWorldFrame[avatar.getPosition().getX()][avatar.getPosition().getY()] = Tileset.AVATAR;
+                    }
+                    seed += Character.toString('d');
+                } else if (key.equals(':')) {
+                    Character q = newWorld.commands.remove(0);
+                    if (q.equals('q')) {
+                        seed += Character.toString(':');
+                        seed += Character.toString('q');
+                        saveWorld(seed);
+                        isKeyQ = true;
+                        break;
+                    }
                 }
             }
         }
 
-
+        File worldFile = new File(this.worldFolder, "loadedWorld.txt");
+        if (worldFile.exists() && !isKeyQ) {
+            worldFile.delete();
+        }
 
         return finalWorldFrame;
     }
 
-    public String loadWorld(String input) {
-        File worldFile = new File(this.worldFolder, input + ".txt");
+    public String loadWorld() {
+        File worldFile = new File(this.worldFolder, "loadedWorld.txt");
         FileReader fr;
         String output = "";
         if (!worldFile.exists()) {
             return null;
         }
         try {
-            fr = new FileReader("byow/Core/savedWorlds/" + input + ".txt");
+            fr = new FileReader("byow/Core/savedWorlds/loadedWorld.txt");
             int i;
             while ((i = fr.read()) != -1) {
-                output += String.valueOf(i);
+                char c = (char) i;
+                output += Character.toString(c);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -232,7 +301,7 @@ public class Engine {
     }
 
     public void saveWorld(String input) {
-        File worldFile = new File(this.worldFolder, input + ".txt");
+        File worldFile = new File(this.worldFolder,"loadedWorld.txt");
         if (!worldFile.exists()) {
             try {
                 worldFile.createNewFile();
@@ -241,7 +310,7 @@ public class Engine {
             }
         }
         try {
-            FileWriter myWriter = new FileWriter("byow/Core/savedWorlds/" + input + ".txt");
+            FileWriter myWriter = new FileWriter("byow/Core/savedWorlds/loadedWorld.txt");
             myWriter.write(input);
             myWriter.close();
             System.out.println("Successfully wrote to the file.");

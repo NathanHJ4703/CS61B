@@ -12,6 +12,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Game {
     InputSource inputSource;
@@ -57,30 +58,36 @@ public class Game {
         return seed;
     }
 
-    public void interactHUD(TETile[][] world, TERenderer ter) {
+    public void interact(TETile[][] world, TERenderer ter, String seed, Engine engine) {
         while (true) {
             displayHUD(world);
-            char c = inputSource.getNextKey();
-            System.out.println(c);
-            if (c == 'W') {
-
+            char m = inputSource.getNextKey();
+            if (m == 'W') {
+                seed += "w";
+                world = engine.interactWithInputString(seed);
             }
-            if (c == 'A') {
-
+            if (m == 'A') {
+                seed += "a";
+                world = engine.interactWithInputString(seed);
             }
-            if (c == 'S') {
-
+            if (m == 'S') {
+                seed += "s";
+                world = engine.interactWithInputString(seed);
             }
-            if (c == 'D') {
-
+            if (m == 'D') {
+                seed += "d";
+                world = engine.interactWithInputString(seed);
+            }
+            if (m == ':') {
+                char q = inputSource.getKeyWait(this, world, ter);
+                if (q == 'Q') {
+                    seed += ":q";
+                    world = engine.interactWithInputString(seed);
+                    pressedQ();
+                    break;
+                }
             }
             ter.renderFrame(world);
-
-
-            if (c == 'Q') {
-                pressedQ = true;
-                break;
-            }
         }
     }
 
@@ -174,15 +181,21 @@ public class Game {
         return output;
     }
 
+    public String filterQ(String seed) {
+        String newString = "";
+        ArrayList<String> x = new ArrayList<>(Arrays.asList(seed.split("")));
+        for (int i = 0; i < x.size(); i++) {
+            if (x.get(i).equals(":") || x.get(i).equals("q")) {
+                continue;
+            }
+            newString += x.get(i);
+        }
+        return newString;
+    }
+
+
+
     public static void main(String[] args) {
-        ArrayList<Integer> x = new ArrayList<>();
-        x.add(3);
-        x.add(4);
-        x.add(5);
-        System.out.println(x.size());
-        System.out.println(x.remove(0));
-        System.out.println(x.remove(0));
-        System.out.println(x.remove(0));
-        System.out.println(x.size());
+
     }
 }
