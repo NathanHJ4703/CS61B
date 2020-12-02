@@ -123,10 +123,17 @@ This class keeps track of the position of the avatar in our world and includes t
 ####    6. isHoverWall: method takes in a world and determines whether user is hovering over a wall tile.  
 ####    7. isHoverFloor: method takes in a world and determines whether user is hovering over a floor tile.  
 
-###KeyboardInteract: 
+### KeyboardInteract: 
 ####    1. getNextKey: 
 ####    2. getKeyWait: method makes sure the key entered by the user will be capitalized. 
 ####    3. possibleNextInput: method inherited from InputSource returns true. 
+
+### Avatar: 
+####    1. Avatar: constructor instantiates the position of the avatar. 
+####    2. getPosition: returns current position of Avatar in generated world.  
+####    3. updatedPosition: changes the position of the avatar everytime it moves.  
+
+
 ## Persistence
 
 ### GameMap: 
@@ -139,7 +146,7 @@ This class constructs a hashmap that allows us to add and get a particular game 
 ### TheGame:
 This class provides methods that allow us to save and load a particular game, as well as generate a file for each new game created.  
 
-####    Instance Variables: 
+####    Instance Variables: method returns the next key the user inputs capitalized. 
 #####   1. GameMap gameMap - creates an instance of a gameMap that allows us to store the games created when running our program
 #####   2. File SavedGames - Creates a file that will allow us to store all text files created for each world. 
 #####   2. File mapFile - creates a new file for each new game started. 
