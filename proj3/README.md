@@ -107,11 +107,21 @@ This class keeps track of the position of the avatar in our world and includes t
 #####   9. openRight - this method takes in the list of open coordinates and generates a random position that will represent an opening in the right side of a room. New Position  generated is added to the list of open coordinates that will pass through the path finder.
 #####   10. openHole - Opens the room from a random wall coordinate.
 
-### PathGraph
+### PathGraph:
 #####   1. neighbors - method takes in a position p and generates a list of four neighbors surrounding each Position (top, bottom, right, left)
 #####   2. estimatedDistanceToGoal - overridden method of AStarGraph
 
+### Engine:
+####    interactWithKeyboard: method creates the starting screen for our game, as well as allows the player to start a new game, load an old game, or quit a game.  This method also allows the avatar to move around the generated world.  
 
+### Game: 
+####    1. Game: constructor instantiates variables 
+####    2. isPressedQ: boolean method checks to see if user quit game. 
+####    3. pressedQ: method sets boolean to true after user hits q on their keyboard. 
+####    4. generateNewWorld: Generates a new world given that the user inputs N + seed + S. 
+####    5. displayHud: method takes in a world and displays what kind of tile the user is hovering over with their mouse. 
+####    6. isHoverWall: method takes in a world and determines whether user is hovering over a wall tile.  
+####    7. isHoverFloor: method takes in a world and determines whether user is hovering over a floor tile.  
 
 ## Persistence
 
