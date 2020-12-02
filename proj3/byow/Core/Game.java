@@ -7,6 +7,10 @@ import byow.TileEngine.Tileset;
 import edu.princeton.cs.introcs.StdDraw;
 
 import java.awt.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Game {
@@ -14,12 +18,17 @@ public class Game {
     private boolean pressedQ;
     private boolean onWall;
     private boolean onFloor;
+    private File worldFolder;
 
     public Game(KeyboardInteract inputSource) {
         this.inputSource = inputSource;
         pressedQ = false;
         onWall = false;
         onFloor = false;
+        this.worldFolder = new File("byow/Core/savedWorlds");
+        if (!this.worldFolder.exists()) {
+            this.worldFolder.mkdir();
+        }
     }
 
     public boolean isPressedQ() {
@@ -124,6 +133,45 @@ public class Game {
             return false;
         }
         return world[xPos - 10][yPos - 5] == Tileset.FLOOR;
+    }
+
+    public void saveWorld(String input) {
+        File worldFile = new File(this.worldFolder, input + ".txt");
+        if (!worldFile.exists()) {
+            try {
+                worldFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            FileWriter myWriter = new FileWriter("byow/Core/savedWorlds/" + input + ".txt");
+            myWriter.write(input);
+            myWriter.close();
+            System.out.println("Successfully wrote to the file.");
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+    }
+
+    public String loadWorld(String input) {
+        File worldFile = new File(this.worldFolder, input + ".txt");
+        FileReader fr;
+        String output = "";
+        if (!worldFile.exists()) {
+            return null;
+        }
+        try {
+            fr = new FileReader("byow/Core/savedWorlds/" + input + ".txt");
+            int i;
+            while ((i = fr.read()) != -1) {
+                output += String.valueOf(i);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return output;
     }
 
     public static void main(String[] args) {
