@@ -123,6 +123,10 @@ This class keeps track of the position of the avatar in our world and includes t
 ####    6. isHoverWall: method takes in a world and determines whether user is hovering over a wall tile.  
 ####    7. isHoverFloor: method takes in a world and determines whether user is hovering over a floor tile.  
 
+###KeyboardInteract: 
+####    1. getNextKey: 
+####    2. getKeyWait: method makes sure the key entered by the user will be capitalized. 
+####    3. possibleNextInput: method inherited from InputSource returns true. 
 ## Persistence
 
 ### GameMap: 
