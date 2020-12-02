@@ -30,9 +30,10 @@ This class provides static methods that allow us to instantiate the tiles in our
 #####   19. Map<Position, Room> openToRoom - Gets the position of the room where there is an opening(a Tileset.NOTHING).
 #####   20. Map<Position, Room> wallToRoom - Gets the position of the room where there is a wall.
 #####   21. Map<Integer, Integer> verticesToConnect - A map to store the pair of vertices to connect in UnionFind at the end to ensure connectedness.
-This class provides methods that construct the rooms in our world and joins them together.  This class also contains a method that tracks the open positions in our world.   
+
 
 ### Room
+This class provides methods that construct the rooms in our world and joins them together.  This class also contains a method that tracks the open positions in our world.   
 #### Instance Variables:
 #####   1. Position bottomLeft - represents the bottom left tile of each room 
 #####   2. int width - width of room 
@@ -52,6 +53,32 @@ This class does not have any instance variables.
 ### VerticalHallway
 This class extends the room class and provides methods that create new hallways 
 #####   1. boolean goingUp: checks if hallway is vertical
+
+
+### Engine: 
+This class runs the two methods interactWithKeyBoard and interactWithInputString.  Also in charge if movement for our avatar.  
+
+
+### Game: 
+Generates a new world for our game method and implements the method displayHUD, which is in charge of implementing the HUD of our game.  
+
+####    Instance Variables: 
+#####   1. InputSource inputSource - input source instance allows us to call the methods found in the KeyboardInteract class (which inherits the methods of InputSource class)
+#####   2. private boolean pressedQ - boolean instance verifies when game has been quit. 
+#####   3. private boolean onWall - boolean instance verifies if mouse is hovering over a wall tile. 
+#####   4. private boolean onFloor - boolean instance verifies if mouse is hovering over a floor tile. 
+
+### KeyboardInteract: 
+This class implements InputSource and contains the methods getNextKey, getKeyWait, and possibleNextInput.  This class allows interactivity between our game and the users movements via their keyboard.  
+
+### Avatar: 
+
+This class keeps track of the position of the avatar in our world and includes the methods: getPosition and updatePosition.  
+
+####    Instance Variable: 
+#####   1. Position position - keeps track of tile the Avatar is currently on.  
+
+
 ## Algorithms
 ### OurWorld
 #####   1. main: this main method instantiates all the tiles in our world and generates random rooms with three different max dimensions. Renders the frame for our world. 
@@ -87,4 +114,19 @@ This class extends the room class and provides methods that create new hallways
 
 
 ## Persistence
+
+### GameMap: 
+
+This class constructs a hashmap that allows us to add and get a particular game by tracking the seed, the game created using that seed when running our game.  
+####    Instance Variable: 
+#####   1. Map<String, Game> gameMap - hashmap used to track games played.  
+
+
+### TheGame:
+This class provides methods that allow us to save and load a particular game, as well as generate a file for each new game created.  
+
+####    Instance Variables: 
+#####   1. GameMap gameMap - creates an instance of a gameMap that allows us to store the games created when running our program
+#####   2. File SavedGames - Creates a file that will allow us to store all text files created for each world. 
+#####   2. File mapFile - creates a new file for each new game started. 
 
