@@ -136,18 +136,13 @@ This class keeps track of the position of the avatar in our world and includes t
 
 ## Persistence
 
-### GameMap: 
+### Game:
+####    1. saveWorld: method takes in a string and creates a new text file given the input spring and uses a file writer to write in this text file.  
+####    2. loadWorld: method takes in a string and uses a file reader to store the information in a particular game's text file and returns the information in the file. 
 
-This class constructs a hashmap that allows us to add and get a particular game by tracking the seed, the game created using that seed when running our game.  
-####    Instance Variable: 
-#####   1. Map<String, Game> gameMap - hashmap used to track games played.  
+### Engine: 
+####    1. saveWorld: method takes in a string and creates a new text file given the input spring and uses a file writer to write in this text file.  
+####    2. loadWorld: method takes in a string and uses a file reader to store the information in a particular game's text file and returns the information in the file. 
 
 
-### TheGame:
-This class provides methods that allow us to save and load a particular game, as well as generate a file for each new game created.  
-
-####    Instance Variables: method returns the next key the user inputs capitalized. 
-#####   1. GameMap gameMap - creates an instance of a gameMap that allows us to store the games created when running our program
-#####   2. File SavedGames - Creates a file that will allow us to store all text files created for each world. 
-#####   2. File mapFile - creates a new file for each new game started. 
 
